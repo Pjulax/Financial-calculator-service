@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Role;
 
 import javax.annotation.PostConstruct;

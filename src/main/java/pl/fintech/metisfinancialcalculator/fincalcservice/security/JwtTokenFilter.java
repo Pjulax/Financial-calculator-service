@@ -3,6 +3,7 @@ package pl.fintech.metisfinancialcalculator.fincalcservice.security;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
