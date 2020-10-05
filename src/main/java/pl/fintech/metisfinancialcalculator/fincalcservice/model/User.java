@@ -19,12 +19,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
+    @Size(min = 5, max = 255, message = "Minimum username length: 5 characters")
     @Column(unique = true, nullable = false)
     private String username;
-
-    @Column(unique = true, nullable = false)
-    private String email;
 
     @Size(min = 8, message = "Minimum password length: 8 characters")
     private String password;
@@ -49,14 +46,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {
