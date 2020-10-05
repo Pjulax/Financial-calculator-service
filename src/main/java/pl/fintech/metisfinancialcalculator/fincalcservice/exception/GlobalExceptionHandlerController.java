@@ -1,5 +1,6 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.exception;
 
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +22,8 @@ public class GlobalExceptionHandlerController {
         // Hide exception field in the return object
         return new DefaultErrorAttributes() {
             @Override
-            public Map<String, Object> getErrorAttributes(WebRequest webRequest, boolean includeStackTrace) {
-                Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, includeStackTrace);
+            public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions errorAttributeOptions) {
+                Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, errorAttributeOptions);
                 errorAttributes.remove("exception");
                 return errorAttributes;
             }
