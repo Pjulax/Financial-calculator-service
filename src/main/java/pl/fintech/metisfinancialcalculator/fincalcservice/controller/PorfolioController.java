@@ -7,7 +7,7 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDT
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNamesDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 
-@RestController
+@RestControlleret4hlTMis
 @RequestMapping("/porfolios")
 public class PorfolioController {
 
