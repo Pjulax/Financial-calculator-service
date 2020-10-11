@@ -14,6 +14,11 @@ import java.util.Optional;
 @RequestMapping("/investments")
 public class InvestmentController {
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "Welcome in investments";
+    }
+
     @GetMapping
     public InvestmentDetailsDTO getInvestmnentDetails(@RequestParam(value = "id") Long investment_id){//TODO
         return new InvestmentDetailsDTO();

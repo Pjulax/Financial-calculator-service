@@ -13,6 +13,10 @@ import java.util.List;
 @RequestMapping("/porfolios")
 public class PorfolioController {
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "Welcome in portfolios";
+    }
 
     @GetMapping(path = "/names")
     public List<PortfolioNameDTO> getAllPortfoliosNames(){//TODO
