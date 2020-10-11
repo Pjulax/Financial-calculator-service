@@ -12,10 +12,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class PortfolioDetailsDTO {
-    double ReturnOfInvestment;
-    BigDecimal RateOfReturnValue;
-    BigDecimal RateOfReturnPercentage;
-    List<GraphPoint> graphPointsValue;
-    double graphPointsFrequenceInYear;
-    List<InvestmentDTO> investmentDTOS;
+    private Double ReturnOfInvestment;
+    private BigDecimal RateOfReturnValue;
+    private BigDecimal RateOfReturnPercentage;
+    private List<GraphPoint> graphPointsValue;
+    private Double graphPointsFrequenceInYear;
+    private List<InvestmentInPorfolioDTO> investmentDTOS;
 }

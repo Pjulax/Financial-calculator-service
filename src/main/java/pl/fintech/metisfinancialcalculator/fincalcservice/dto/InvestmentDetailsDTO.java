@@ -14,17 +14,17 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class InvestmentDetailsDTO {
-    String name;
-    Date startDate;
-    Category category;
-    Integer risk;
-    BigDecimal initialDepositValue;
-    BigDecimal systematicDepositValue;
-    Double frequenceInYear;
-    Integer durationInDays;
-    Double ReturnOfInvestment;
-    BigDecimal RateOfReturnValue;
-    BigDecimal RateOfReturnPercentage;
-    List<Point2D.Double> graphPointsValue;
+    private String name;
+    private Date startDate;
+    private Category category;
+    private Integer risk;
+    private BigDecimal initialDepositValue;
+    private BigDecimal systematicDepositValue;
+    private Double frequenceInYear;
+    private Integer durationInDays;
+    private Double ReturnOfInvestment;
+    private BigDecimal RateOfReturnValue;
+    private BigDecimal RateOfReturnPercentage;
+    private List<Point2D.Double> graphPointsValue;
     double graphPointsFrequenceInYear;
 }

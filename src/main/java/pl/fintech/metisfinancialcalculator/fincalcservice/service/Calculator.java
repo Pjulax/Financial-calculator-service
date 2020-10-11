@@ -2,6 +2,7 @@ package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
@@ -18,7 +19,7 @@ public class Calculator {
         this.investmentRepository = investmentRepository;
     }
 
-    public Result calculateInvestment(Investment investment){
+    public Result calculateInvestment(InvestmentParametersDTO parameters){
         return new Result(); //TODO
     }
     public Result calculatePortfolio(List<Investment> portfolioInvestments){

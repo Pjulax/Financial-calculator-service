@@ -4,8 +4,10 @@ package pl.fintech.metisfinancialcalculator.fincalcservice.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDTO;
-import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNamesDTO;
+import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/porfolios")
@@ -13,12 +15,16 @@ public class PorfolioController {
 
 
     @GetMapping(path = "/names")
-    public PortfolioNamesDTO getAllPorfoliosNames(){//TODO
-        return new PortfolioNamesDTO();
+    public List<PortfolioNameDTO> getAllPortfoliosNames(){//TODO
+        return List.of();
     }
 
     @GetMapping(path = "/details")
     public PortfolioDetailsDTO getPorfolioDetails(@RequestParam(value = "id") Long porfolio_id){//TODO
+        return new PortfolioDetailsDTO();
+    }
+    @GetMapping(path = "/all-investments-details")
+    public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
         return new PortfolioDetailsDTO();
     }
 

@@ -18,8 +18,8 @@ public class InvestmentService {
         this.investmentRepository = investmentRepository;
     }
 
-    public Investment getInvestment(Long investment_id){
-        return new Investment(); //TODO
+    public InvestmentDetailsDTO getInvestment(Long investment_id){
+        return new InvestmentDetailsDTO(); //TODO
     }
     public List<Investment> getAllInvestments(){
         return List.of(); //TODO
@@ -31,8 +31,4 @@ public class InvestmentService {
     public void removeInvestment(Long investment_id){
         //TODO
     }
-    public InvestmentDetailsDTO getInvestmentResult(Long investment_id){
-        return new InvestmentDetailsDTO();//TODO
-    }
-
 }

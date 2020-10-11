@@ -3,7 +3,8 @@ package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDTO;
+import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
+import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentInPorfolioDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
@@ -32,7 +33,7 @@ public class PortfolioService {
         return List.of();
     }
 
-    public Investment addInvestment(InvestmentDTO investmentDTO, Optional<Portfolio> portfolio){//TODO
+    public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Optional<Portfolio> portfolio){//TODO
         return new Investment();
     }
 

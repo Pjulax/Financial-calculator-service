@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PortfolioNamesDTO {
-    public Long id;
-    public String name;
+public class PortfolioNameDTO {
+    private Long id;
+    private String name;
 }

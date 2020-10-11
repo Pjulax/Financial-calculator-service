@@ -14,11 +14,11 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class InvestmentDTO {
-    Long id;
-    String name;
-    double rateOfReturnPercentage;
-    Category category;
-    List<Point.Double> graphPointsValue;
-    double graphPointsFrequenceInYear;
+public class InvestmentInPorfolioDTO {
+    private Long id;
+    private String name;
+    private Double rateOfReturnPercentage;
+    private Category category;
+    private List<Point.Double> graphPointsValue;
+    private Double graphPointsFrequenceInYear;
 }
