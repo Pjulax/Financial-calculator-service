@@ -11,6 +11,10 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 @RequestMapping("/porfolios")
 public class PorfolioController {
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello";
+    }
 
     @GetMapping(path = "/names")
     public PortfolioNamesDTO getAllPorfoliosNames(){//TODO
