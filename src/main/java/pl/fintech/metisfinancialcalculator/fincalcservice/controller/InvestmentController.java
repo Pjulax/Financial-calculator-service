@@ -10,7 +10,12 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.Calculator;
+import pl.fintech.metisfinancialcalculator.fincalcservice.service.InvestmentService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 
 @RestController
@@ -23,7 +28,7 @@ public class InvestmentController {
     }
 
     @Autowired
-    Calculator calculator;
+    InvestmentService investmentService;
 
     @GetMapping
     public InvestmentDetailsDTO getInvestmnentDetails(@RequestParam(value = "id") Long investment_id){//TODO
@@ -32,8 +37,8 @@ public class InvestmentController {
 
 
     @GetMapping(value = "/calculate", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Result calculateInvestment(@RequestBody InvestmentParametersDTO parameters){//TODO
-        return calculator.calculateInvestment(parameters);
+    public InvestmentDetailsDTO calculateInvestment(@RequestBody InvestmentParametersDTO parameters){//TODO
+        return investmentService.calculateInvestment(parameters);
     }
 
 

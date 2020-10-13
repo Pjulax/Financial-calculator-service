@@ -3,7 +3,10 @@ package pl.fintech.metisfinancialcalculator.fincalcservice.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.fintech.metisfinancialcalculator.fincalcservice.enums.XDateType;
+import pl.fintech.metisfinancialcalculator.fincalcservice.enums.YValueType;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Category;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.GraphPoint;
 
 import java.awt.geom.Point2D;
 import java.math.BigDecimal;
@@ -18,13 +21,14 @@ public class InvestmentDetailsDTO {
     private Date startDate;
     private Category category;
     private Integer risk;
-    private BigDecimal initialDepositValue;
-    private BigDecimal systematicDepositValue;
+    private Double initialDepositValue;
+    private Double systematicDepositValue;
     private Double frequenceInYear;
-    private Integer durationInDays;
-    private Double ReturnOfInvestment;
-    private BigDecimal RateOfReturnValue;
-    private BigDecimal RateOfReturnPercentage;
-    private List<Point2D.Double> graphPointsValue;
-    double graphPointsFrequenceInYear;
+    private Double durationInYears;
+    private Double returnOfInvestmentPercentage;
+    private BigDecimal rateOfReturnValue;
+    private Double rateOfReturnPercentage;
+    private List<GraphPoint> graphPointsValue;
+    private XDateType xaxisDataType;
+    private YValueType yaxisDataType;
 }
