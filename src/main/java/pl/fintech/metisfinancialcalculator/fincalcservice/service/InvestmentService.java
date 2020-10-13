@@ -48,7 +48,6 @@ public class InvestmentService {
         investment.setReturnOfInvestmentPercentage(parameters.getReturnOfInvestment());
         // values from result
         Result result = calculator.calculateInvestment(parameters);
-        investment.setAnnualRateOfReturnPercentage(BigDecimal.valueOf(result.getRateOfReturnPercentage()).divide(BigDecimal.valueOf(parameters.getDurationInYears()), RoundingMode.FLOOR).doubleValue());
         investment.setRateOfReturnValue(result.getRateOfReturnValue());
         investment.setRateOfReturnPercentage(result.getRateOfReturnPercentage());
         investment.setGraphPointsValue(result.getGraphPointValues());
