@@ -28,7 +28,7 @@ public class Result {
     private Double graphPointsFrequenceInYear;
     private Double returnOfInvestment;
 
-    private BigDecimal annualValueDifference;
+    private BigDecimal annualRateOfReturnValue;
 
     private XDateType xAxisDataType;
     private YValueType yAxisDataType;

@@ -33,8 +33,9 @@ public class Calculator {
         for(double i = parameters.getDurationInYears(); i >= 0; i -= parameters.getFrequenceInYear()){
             resultFVWithCashFlow = resultFVWithCashFlow.add(systematicDeposit)
                                                         .multiply(BigDecimal.valueOf(Math.pow((1+parameters.getReturnOfInvestment()), i)));
+
             // date in years must be inverted, it is counted from 0 to durationInYears
-            graphPoints.add(new GraphPoint(resultFVWithCashFlow.doubleValue(), (parameters.getDurationInYears() - i)));
+            graphPoints.add(new GraphPoint((parameters.getDurationInYears() - i), resultFVWithCashFlow.doubleValue()));
         }
         return createResult(parameters, resultFVWithCashFlow, graphPoints);
     }
@@ -53,7 +54,7 @@ public class Calculator {
         result.setRateOfReturnPercentage(result.getRateOfReturnValue().divide(investedMoney,RoundingMode.FLOOR).doubleValue());
 
         // possibly this member could be better to be BigDecimal, not double
-        result.setAnnualValueDifference(result.getRateOfReturnValue().divide(BigDecimal.valueOf(investment.getDurationInYears()), RoundingMode.FLOOR));
+        result.setAnnualRateOfReturnValue(result.getRateOfReturnValue().divide(BigDecimal.valueOf(investment.getDurationInYears()), RoundingMode.FLOOR));
         result.setGraphPointsFrequenceInYear(investment.getFrequenceInYear());
         result.setGraphPointValues(graphPoints);
         result.setXAxisDataType(getDateType(investment.getDurationInYears()));
