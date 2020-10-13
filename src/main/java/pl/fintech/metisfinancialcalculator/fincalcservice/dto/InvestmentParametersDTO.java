@@ -11,10 +11,10 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class InvestmentParametersDTO {
-    private Date startDate;
-    private BigDecimal initialDepositValue;
-    private BigDecimal systematicDepositValue;
+    private String startDate;
+    private Double initialDepositValue;
+    private Double systematicDepositValue;
     private Double frequenceInYear;
     private Double durationInYears;
-    private Double ReturnOfInvestment;
+    private Double returnOfInvestment;
 }

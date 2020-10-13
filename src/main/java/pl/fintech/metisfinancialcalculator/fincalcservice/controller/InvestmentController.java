@@ -1,12 +1,15 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.controller;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentInPorfolioDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
+import pl.fintech.metisfinancialcalculator.fincalcservice.service.Calculator;
 
 import java.util.Optional;
 
@@ -19,14 +22,18 @@ public class InvestmentController {
         return "Welcome in investments";
     }
 
+    @Autowired
+    Calculator calculator;
+
     @GetMapping
     public InvestmentDetailsDTO getInvestmnentDetails(@RequestParam(value = "id") Long investment_id){//TODO
         return new InvestmentDetailsDTO();
     }
 
-    @GetMapping("/calculate")
-    public InvestmentDetailsDTO calculateInvestment(InvestmentParametersDTO parameters){//TODO
-        return new InvestmentDetailsDTO();
+
+    @GetMapping(value = "/calculate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Result calculateInvestment(@RequestBody InvestmentParametersDTO parameters){//TODO
+        return calculator.calculateInvestment(parameters);
     }
 
 

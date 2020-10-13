@@ -1,7 +1,6 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.controller;
 
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
@@ -16,6 +15,7 @@ public class PorfolioController {
     @GetMapping("/hello")
     public String hello(){
         return "Welcome in portfolios";
+
     }
 
     @GetMapping(path = "/names")
