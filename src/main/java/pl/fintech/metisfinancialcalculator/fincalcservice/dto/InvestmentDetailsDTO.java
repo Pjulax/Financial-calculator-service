@@ -26,8 +26,6 @@ public class InvestmentDetailsDTO {
     private Double frequenceInYear;
     private Double durationInYears;
     private Double returnOfInvestmentPercentage;
-    private BigDecimal annualRateOfReturnValue;
-    private Double annualRateOfReturnPercentage;
     private BigDecimal rateOfReturnValue;
     private Double rateOfReturnPercentage;
     private List<GraphPoint> graphPointsValue;

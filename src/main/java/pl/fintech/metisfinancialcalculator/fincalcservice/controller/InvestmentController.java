@@ -10,6 +10,7 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.Calculator;
+import pl.fintech.metisfinancialcalculator.fincalcservice.service.InvestmentService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,7 +28,7 @@ public class InvestmentController {
     }
 
     @Autowired
-    Calculator calculator;
+    InvestmentService investmentService;
 
     @GetMapping
     public InvestmentDetailsDTO getInvestmnentDetails(@RequestParam(value = "id") Long investment_id){//TODO
@@ -37,28 +38,7 @@ public class InvestmentController {
 
     @GetMapping(value = "/calculate", consumes = MediaType.APPLICATION_JSON_VALUE)
     public InvestmentDetailsDTO calculateInvestment(@RequestBody InvestmentParametersDTO parameters){//TODO
-        InvestmentDetailsDTO investment = new InvestmentDetailsDTO();
-        // not used, write down just for clarity
-        investment.setCategory(null);
-        investment.setRisk(null);
-        investment.setName(null);
-        // values from parameters
-        investment.setStartDate(Calendar.getInstance().getTime());
-        investment.setInitialDepositValue(parameters.getInitialDepositValue());
-        investment.setSystematicDepositValue(parameters.getSystematicDepositValue());
-        investment.setDurationInYears(parameters.getDurationInYears());
-        investment.setFrequenceInYear(parameters.getFrequenceInYear());
-        investment.setReturnOfInvestmentPercentage(parameters.getReturnOfInvestment());
-        // values from result
-        Result result = calculator.calculateInvestment(parameters);
-        investment.setAnnualRateOfReturnValue(result.getAnnualRateOfReturnValue());
-        investment.setAnnualRateOfReturnPercentage(BigDecimal.valueOf(result.getRateOfReturnPercentage()).divide(BigDecimal.valueOf(parameters.getDurationInYears()), RoundingMode.FLOOR).doubleValue());
-        investment.setRateOfReturnValue(result.getRateOfReturnValue());
-        investment.setRateOfReturnPercentage(result.getRateOfReturnPercentage());
-        investment.setGraphPointsValue(result.getGraphPointValues());
-        investment.setXaxisDataType(result.getXAxisDataType());
-        investment.setYaxisDataType(result.getYAxisDataType());
-        return investment;
+        return investmentService.calculateInvestment(parameters);
     }
 
 

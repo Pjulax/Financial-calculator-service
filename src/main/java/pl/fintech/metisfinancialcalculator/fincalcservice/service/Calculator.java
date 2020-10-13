@@ -40,7 +40,7 @@ public class Calculator {
                                                                         Math.pow((1+parameters.getReturnOfInvestment()), i))));
 
             // date in years must be inverted, it is counted from 0 to durationInYears
-            graphPoints.add(new GraphPoint((parameters.getDurationInYears()), resultFVWithCashFlow.doubleValue()));
+            graphPoints.add(new GraphPoint(i , resultFVWithCashFlow.doubleValue()));
         }
         return createResult(parameters, resultFVWithCashFlow, graphPoints);
     }
@@ -52,15 +52,13 @@ public class Calculator {
         BigDecimal investedMoney = new BigDecimal(investment.getInitialDepositValue().toString());
         investedMoney = investedMoney.add(
                 systematicDeposit.multiply(
-                BigDecimal.valueOf(investment.getDurationInYears()*investment.getFrequenceInYear())));
+                BigDecimal.valueOf(investment.getDurationInYears()/investment.getFrequenceInYear())));
 
         // setting members of result
         result.setReturnOfInvestment(investment.getReturnOfInvestment());
         result.setRateOfReturnValue(resultFVWithCashFlow.subtract(investedMoney));
         result.setRateOfReturnPercentage(result.getRateOfReturnValue().divide(investedMoney,RoundingMode.FLOOR).doubleValue());
-
-        // possibly this member could be better to be BigDecimal, not double
-        result.setAnnualRateOfReturnValue(result.getRateOfReturnValue().divide(BigDecimal.valueOf(investment.getDurationInYears()), RoundingMode.FLOOR));
+        // possibly this member could be better to be BigDecimal, not double // TODO change from value to percentage
         result.setGraphPointsFrequenceInYear(investment.getFrequenceInYear());
         result.setGraphPointValues(graphPoints);
         result.setXAxisDataType(getDateType(investment.getDurationInYears()));
