@@ -19,7 +19,9 @@ import static pl.fintech.metisfinancialcalculator.fincalcservice.enums.YValueTyp
 @Service
 @NoArgsConstructor
 public class Calculator {
-
+    /*
+    * Method is calculating value with "Make deposits at beginning of the period"
+    */
     public Result calculateInvestment(InvestmentParametersDTO parameters){
         // resultFV calculation
         BigDecimal resultFVWithCashFlow = new BigDecimal(parameters.getInitialDepositValue()).multiply(
@@ -29,27 +31,31 @@ public class Calculator {
 
         // resultFV with cash flow calculation and graph points creating
         ArrayList<GraphPoint> graphPoints = new ArrayList<GraphPoint>();
-        BigDecimal systematicDeposit = new BigDecimal(parameters.getSystematicDepositValue());
-        for(double i = parameters.getDurationInYears(); i >= 0; i -= parameters.getFrequenceInYear()){
-            resultFVWithCashFlow = resultFVWithCashFlow.add(systematicDeposit)
-                                                        .multiply(BigDecimal.valueOf(Math.pow((1+parameters.getReturnOfInvestment()), i)));
+        graphPoints.add(new GraphPoint(0.0, parameters.getInitialDepositValue()));
+        BigDecimal systematicDeposit = new BigDecimal(parameters.getSystematicDepositValue().toString());
+        for(double i = parameters.getFrequenceInYear(); i <= parameters.getDurationInYears(); i += parameters.getFrequenceInYear()){
+            resultFVWithCashFlow = resultFVWithCashFlow.add(
+                                                        systematicDeposit.multiply(
+                                                                BigDecimal.valueOf(
+                                                                        Math.pow((1+parameters.getReturnOfInvestment()), i))));
 
             // date in years must be inverted, it is counted from 0 to durationInYears
-            graphPoints.add(new GraphPoint((parameters.getDurationInYears() - i), resultFVWithCashFlow.doubleValue()));
+            graphPoints.add(new GraphPoint((parameters.getDurationInYears()), resultFVWithCashFlow.doubleValue()));
         }
         return createResult(parameters, resultFVWithCashFlow, graphPoints);
     }
     private Result createResult(InvestmentParametersDTO investment, BigDecimal resultFVWithCashFlow, ArrayList<GraphPoint> graphPoints) {
         Result result = new Result();
-        BigDecimal systematicDeposit = new BigDecimal(investment.getSystematicDepositValue());
+        BigDecimal systematicDeposit = new BigDecimal(investment.getSystematicDepositValue().toString());
 
         // invested money = initial + (systematicDepositValue * (DurationInYears * FrequenceInYear))
-        BigDecimal investedMoney = cloneBigDecimal(systematicDeposit);
+        BigDecimal investedMoney = new BigDecimal(investment.getInitialDepositValue().toString());
         investedMoney = investedMoney.add(
                 systematicDeposit.multiply(
-                BigDecimal.valueOf(investment.getDurationInYears()* investment.getFrequenceInYear())));
+                BigDecimal.valueOf(investment.getDurationInYears()*investment.getFrequenceInYear())));
 
         // setting members of result
+        result.setReturnOfInvestment(investment.getReturnOfInvestment());
         result.setRateOfReturnValue(resultFVWithCashFlow.subtract(investedMoney));
         result.setRateOfReturnPercentage(result.getRateOfReturnValue().divide(investedMoney,RoundingMode.FLOOR).doubleValue());
 
@@ -60,9 +66,6 @@ public class Calculator {
         result.setXAxisDataType(getDateType(investment.getDurationInYears()));
         result.setYAxisDataType(POUNDS);
         return result;
-    }
-    private BigDecimal cloneBigDecimal(BigDecimal bigDecimal){
-        return new BigDecimal(bigDecimal.toString());
     }
     private XDateType getDateType(Double duration){
         if(duration>=3)
