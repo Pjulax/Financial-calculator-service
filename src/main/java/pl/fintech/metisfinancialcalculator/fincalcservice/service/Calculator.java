@@ -33,9 +33,8 @@ public class Calculator {
         for(double i = parameters.getDurationInYears(); i >= 0; i -= parameters.getFrequenceInYear()){
             resultFVWithCashFlow = resultFVWithCashFlow.add(systematicDeposit)
                                                         .multiply(BigDecimal.valueOf(Math.pow((1+parameters.getReturnOfInvestment()), i)));
-
             // date in years must be inverted, it is counted from 0 to durationInYears
-            graphPoints.add(new GraphPoint(resultFVWithCashFlow.doubleValue(),(parameters.getDurationInYears().doubleValue() - i)));
+            graphPoints.add(new GraphPoint(resultFVWithCashFlow.doubleValue(), (parameters.getDurationInYears() - i)));
         }
         return createResult(parameters, resultFVWithCashFlow, graphPoints);
     }
