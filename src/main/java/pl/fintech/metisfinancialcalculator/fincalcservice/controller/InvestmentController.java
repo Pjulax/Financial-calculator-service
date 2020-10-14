@@ -18,7 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 @RestController
 @RequestMapping("/investments")
 public class InvestmentController {

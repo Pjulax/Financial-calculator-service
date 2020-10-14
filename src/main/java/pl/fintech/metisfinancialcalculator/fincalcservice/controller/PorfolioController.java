@@ -8,7 +8,7 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/porfolios")
 public class PorfolioController {
