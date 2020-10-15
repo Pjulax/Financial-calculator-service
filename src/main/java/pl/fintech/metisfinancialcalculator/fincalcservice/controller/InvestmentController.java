@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/investments")
+@RequestMapping("/api/investments")
 public class InvestmentController {
 
     @GetMapping("/hello")

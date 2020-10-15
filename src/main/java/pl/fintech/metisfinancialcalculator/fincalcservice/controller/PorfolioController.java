@@ -10,7 +10,7 @@ import java.util.List;
 
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/porfolios")
+@RequestMapping("/api/porfolios")
 public class PorfolioController {
 
     @GetMapping("/hello")
