@@ -36,7 +36,7 @@ public class InvestmentController {
     }
 
 
-    @GetMapping(value = "/calculate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/calculate", consumes = MediaType.APPLICATION_JSON_VALUE)
     public InvestmentDetailsDTO calculateInvestment(@RequestBody InvestmentParametersDTO parameters){//TODO
         return investmentService.calculateInvestment(parameters);
     }
