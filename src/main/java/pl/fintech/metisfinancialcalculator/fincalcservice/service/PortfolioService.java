@@ -71,7 +71,7 @@ public class PortfolioService {
         result.setXAxisDataType(XDateType.YEAR);
         result.setYAxisDataType(YValueType.POUNDS);
 
-        result = resultRespotiory.save(result);
+
         investment.setResult(result);
 
         //

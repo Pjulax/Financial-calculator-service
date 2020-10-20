@@ -64,7 +64,6 @@ public class InvestmentService {
         Investment investment = investmentRepository.findById(investment_id).orElse(null);
         if(investment==null)
             return new Investment();
-
         investment.setCategory(investmentDetailsDTO.getCategory());
         investment.setRisk(investmentDetailsDTO.getRisk());
         investment.setName(investmentDetailsDTO.getName());
@@ -77,9 +76,6 @@ public class InvestmentService {
         long duration =  investmentDetailsDTO.getDurationInYears().longValue();
         duration = duration*((long)364.25)*24*60*1000;
         investment.setDuration(new Date(duration));
-
-        Result result = investment.getResult();
-        resultRespotiory.delete(result);
         //setting parameters for new result
         InvestmentParametersDTO investmentParametersDTO = new InvestmentParametersDTO();
         investmentParametersDTO.setStartDate(investmentDetailsDTO.getStartDate().toString());
