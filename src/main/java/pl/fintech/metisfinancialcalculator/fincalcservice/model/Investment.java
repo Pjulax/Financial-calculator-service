@@ -34,6 +34,6 @@ public class Investment {
     @Temporal(TemporalType.TIMESTAMP)
     private Date duration;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Result result;
 }
