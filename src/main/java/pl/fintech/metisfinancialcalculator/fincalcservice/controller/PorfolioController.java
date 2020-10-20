@@ -1,17 +1,26 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.controller;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PorfolioRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.service.PortfolioService;
 
 import java.util.List;
 
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
+//c@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/porfolios")
 public class PorfolioController {
+
+    @Autowired
+    PorfolioRepository porfolioRepository;
+
+    @Autowired
+    PortfolioService portfolioService;
 
     @GetMapping("/hello")
     public String hello(){
@@ -21,7 +30,7 @@ public class PorfolioController {
 
     @GetMapping(path = "/names")
     public List<PortfolioNameDTO> getAllPortfoliosNames(){//TODO
-        return List.of();
+        return portfolioService.getAllPortfioliosNames();
     }
 
     @GetMapping(path = "/details")
@@ -34,13 +43,13 @@ public class PorfolioController {
     }
 
     @GetMapping
-    public Portfolio getPorfolio(@RequestParam(value = "id") Long porfolio_id){//TODO
-        return new Portfolio();
+    public Portfolio getPortfolio(@RequestParam(value = "id") Long portfolio_id){//TODO to remove only to tests
+        return porfolioRepository.findById(portfolio_id).orElse(null);
     }
 
     @PostMapping
     public Portfolio createPorfolio(@RequestParam(value = "name") String name){//TODO
-        return new Portfolio();
+        return portfolioService.createPortfolio(name);
     }
 
     @PutMapping

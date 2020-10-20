@@ -11,6 +11,7 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.Calculator;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.InvestmentService;
+import pl.fintech.metisfinancialcalculator.fincalcservice.service.PortfolioService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -30,6 +31,9 @@ public class InvestmentController {
     @Autowired
     InvestmentService investmentService;
 
+    @Autowired
+    PortfolioService portfolioService;
+
     @GetMapping
     public InvestmentDetailsDTO getInvestmnentDetails(@RequestParam(value = "id") Long investment_id){//TODO
         return new InvestmentDetailsDTO();
@@ -42,19 +46,19 @@ public class InvestmentController {
     }
 
 
-    @PostMapping
-    public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Optional<Portfolio> porfolio){//TODO
-        return new Investment();
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Investment addInvestment(@RequestBody InvestmentDetailsDTO investmentDTO, @RequestParam(value = "id") Long porfolio_id){//TODO
+        return portfolioService.addInvestment(investmentDTO,porfolio_id);
     }
 
     @PutMapping
-    public void modifyInvestment(@RequestParam(value = "id") Long investment_id){//TODO
-
+    public Investment modifyInvestment(@RequestBody InvestmentDetailsDTO investmentDTO, @RequestParam(value = "id") Long investment_id){//TODO
+        return investmentService.modifyInvestment(investment_id,investmentDTO);
     }
 
     @DeleteMapping
     public void removeInvestment(@RequestParam(value = "id") Long investment_id){//TODO
-
+        investmentService.removeInvestment(investment_id);
     }
 
 }

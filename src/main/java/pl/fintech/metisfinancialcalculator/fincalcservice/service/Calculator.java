@@ -30,7 +30,7 @@ public class Calculator {
                                             parameters.getDurationInYears())));
 
         // resultFV with cash flow calculation and graph points creating
-        ArrayList<GraphPoint> graphPoints = new ArrayList<GraphPoint>();
+        ArrayList<GraphPoint> graphPoints = new ArrayList<>();
         graphPoints.add(new GraphPoint(0.0, parameters.getInitialDepositValue()));
         BigDecimal systematicDeposit = new BigDecimal(parameters.getSystematicDepositValue().toString());
         for(double i = parameters.getFrequenceInYear(); i <= parameters.getDurationInYears(); i += parameters.getFrequenceInYear()){
@@ -59,7 +59,6 @@ public class Calculator {
         result.setRateOfReturnValue(resultFVWithCashFlow.subtract(investedMoney));
         result.setRateOfReturnPercentage(result.getRateOfReturnValue().divide(investedMoney,RoundingMode.FLOOR).doubleValue());
         // possibly this member could be better to be BigDecimal, not double // TODO change from value to percentage
-        result.setGraphPointsFrequenceInYear(investment.getFrequenceInYear());
         result.setGraphPointValues(graphPoints);
         result.setXAxisDataType(getDateType(investment.getDurationInYears()));
         result.setYAxisDataType(POUNDS);
