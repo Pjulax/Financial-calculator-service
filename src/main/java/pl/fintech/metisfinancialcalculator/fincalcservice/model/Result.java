@@ -24,15 +24,11 @@ public class Result {
 
     private BigDecimal rateOfReturnValue;
     private Double rateOfReturnPercentage;
-
-    private Double graphPointsFrequenceInYear;
     private Double returnOfInvestment;
-
-    private BigDecimal annualRateOfReturnPercentage;
 
     private XDateType xAxisDataType;
     private YValueType yAxisDataType;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<GraphPoint> graphPointValues;
 }

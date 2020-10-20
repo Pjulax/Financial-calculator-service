@@ -18,7 +18,7 @@ public class InvestmentInPorfolioDTO {
     private Long id;
     private String name;
     private Double rateOfReturnPercentage;
-    private Category category;
+    private String category;
     private List<Point.Double> graphPointsValue;
     private Double graphPointsFrequenceInYear;
 }

@@ -7,10 +7,12 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParamete
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRespotiory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,19 +20,22 @@ public class InvestmentService {
 
     InvestmentRepository investmentRepository;
 
+    ResultRespotiory resultRespotiory;
+
     @Autowired
     Calculator calculator;
 
     @Autowired
-    public InvestmentService(InvestmentRepository investmentRepository){
+    public InvestmentService(InvestmentRepository investmentRepository, ResultRespotiory resultRespotiory){
         this.investmentRepository = investmentRepository;
+        this.resultRespotiory = resultRespotiory;
     }
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
         return new InvestmentDetailsDTO(); //TODO
     }
     public List<Investment> getAllInvestments(){
-        return List.of(); //TODO
+        return investmentRepository.findAll();
     }
 
     public InvestmentDetailsDTO calculateInvestment(InvestmentParametersDTO parameters){
@@ -55,10 +60,37 @@ public class InvestmentService {
         investment.setYaxisDataType(result.getYAxisDataType());
         return investment;
     }
-    public void modifyInvestment(Long investment_id){
-        //TODO
+    public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
+        Investment investment = investmentRepository.findById(investment_id).orElse(null);
+        if(investment==null)
+            return new Investment();
+        investment.setCategory(investmentDetailsDTO.getCategory());
+        investment.setRisk(investmentDetailsDTO.getRisk());
+        investment.setName(investmentDetailsDTO.getName());
+        investment.setStartDate(investmentDetailsDTO.getStartDate());
+        investment.setInitialDepositValue(investmentDetailsDTO.getInitialDepositValue());
+        investment.setFrequneceInYear(investmentDetailsDTO.getFrequenceInYear());
+        investment.setReturnOfInvestment(investmentDetailsDTO.getReturnOfInvestmentPercentage());
+        investment.setSysematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
+
+        long duration =  investmentDetailsDTO.getDurationInYears().longValue();
+        duration = duration*((long)364.25)*24*60*1000;
+        investment.setDuration(new Date(duration));
+        //setting parameters for new result
+        InvestmentParametersDTO investmentParametersDTO = new InvestmentParametersDTO();
+        investmentParametersDTO.setStartDate(investmentDetailsDTO.getStartDate().toString());
+        investmentParametersDTO.setDurationInYears(investmentDetailsDTO.getDurationInYears());
+        investmentParametersDTO.setFrequenceInYear(investmentDetailsDTO.getFrequenceInYear());
+        investmentParametersDTO.setInitialDepositValue(investmentDetailsDTO.getInitialDepositValue());
+        investmentParametersDTO.setReturnOfInvestment(investmentDetailsDTO.getReturnOfInvestmentPercentage());
+        investmentParametersDTO.setSystematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
+        investment.setResult(calculator.calculateInvestment(investmentParametersDTO));
+        //save modified
+        return investmentRepository.save(investment);
     }
     public void removeInvestment(Long investment_id){
-        //TODO
+        investmentRepository.deleteById(investment_id);
     }
 }
+
+

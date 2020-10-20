@@ -19,19 +19,21 @@ public class Investment {
     private String name;
     private Date startDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+//    Category to String, further I can change it back to Category
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "category_id")
 
-    private int risk;
-    private BigDecimal initialDepositValue;
-    private BigDecimal sysematicDepositValue;
+    private String category;
+
+    private Double risk;
+    private Double initialDepositValue;
+    private Double sysematicDepositValue;
     private Double frequneceInYear;
     private Double returnOfInvestment;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date duration;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Result result;
 }

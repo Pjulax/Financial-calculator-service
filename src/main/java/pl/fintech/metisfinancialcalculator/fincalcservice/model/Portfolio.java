@@ -17,9 +17,13 @@ public class Portfolio {
     @GeneratedValue()
     private Long id;
 
+    public Portfolio(String name){
+        this.name = name;
+    }
+
     private String name;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Investment> investments;
 
     @OneToOne

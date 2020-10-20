@@ -19,8 +19,8 @@ import java.util.List;
 public class InvestmentDetailsDTO {
     private String name;
     private Date startDate;
-    private Category category;
-    private Integer risk;
+    private String category;
+    private Double risk;
     private Double initialDepositValue;
     private Double systematicDepositValue;
     private Double frequenceInYear;
