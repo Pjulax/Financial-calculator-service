@@ -19,6 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // username functions in the format of email
     @Size(min = 5, max = 255, message = "Minimum username length: 5 characters")
     @Column(unique = true, nullable = false)
     private String username;
