@@ -104,17 +104,33 @@ public class PortfolioService {
         if(portfolio==null)
             return new PortfolioDetailsDTO();
         PortfolioDetailsDTO portfolioDetailsDTO = new PortfolioDetailsDTO();
-        portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPorfolio(portfolio));
-        portfolioDetailsDTO.setInvestmentDTOS(investmentInPorfolioDTOS(portfolio));
-        portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(portfolio));
-        portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(portfolio));
-        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvesteCashInPortfolio(portfolio));
+        List<Investment> investments = portfolio.getInvestments();
+
+        portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPorfolio(investments));
+        portfolioDetailsDTO.setInvestmentDTOS(investmentInPorfolioDTOS(investments));
+        portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(investments));
+        portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(investments));
+        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvesteCashInPortfolio(investments));
+        return portfolioDetailsDTO;
+    }
+
+    public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
+        List<Portfolio> portfolios = portfolioRepository.findAll();
+        List<Investment> investments = new ArrayList<>();
+        for (Portfolio p : portfolios) {
+            investments.addAll(p.getInvestments());
+        }
+        PortfolioDetailsDTO portfolioDetailsDTO = new PortfolioDetailsDTO();
+        portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPorfolio(investments));
+        portfolioDetailsDTO.setInvestmentDTOS(investmentInPorfolioDTOS(investments));
+        portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(investments));
+        portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(investments));
+        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvesteCashInPortfolio(investments));
         return portfolioDetailsDTO;
     }
 
 
-    private  List<GraphPoint> getGraphPointsValuesOFPorfolio(Portfolio portfolio){
-        List<Investment> investments = portfolio.getInvestments();
+    private  List<GraphPoint> getGraphPointsValuesOFPorfolio(List<Investment> investments){
         if(investments.size()==0) return List.of();
         if(investments.size()==1) return  investments.get(0).getResult().getGraphPointValues();
 
@@ -139,9 +155,8 @@ public class PortfolioService {
         }
         return graphPoints;
     }
-    private List<InvestmentInPorfolioDTO> investmentInPorfolioDTOS(Portfolio portfolio){
+    private List<InvestmentInPorfolioDTO> investmentInPorfolioDTOS(List<Investment> investments){
         List<InvestmentInPorfolioDTO> investmentInPorfolioDTOS = new ArrayList<>();
-        List<Investment> investments = portfolio.getInvestments();
 
         for (Investment in: investments
              ) {
@@ -158,8 +173,7 @@ public class PortfolioService {
         }
         return investmentInPorfolioDTOS;
     }
-    private BigDecimal getRateOfReturnOfPortfolio(Portfolio portfolio){
-        List<Investment> investments = portfolio.getInvestments();
+    private BigDecimal getRateOfReturnOfPortfolio(List<Investment> investments){
         //(1200÷1000−1)÷(3÷12) = (k-p-1)/(frequence)
         double sumOfInvestedMoney = 0d;
         double sumOfResult = 0d;
@@ -171,15 +185,13 @@ public class PortfolioService {
         double result = sumOfResult/sumOfInvestedMoney-1;
         return BigDecimal.valueOf(result);
     }
-    private BigDecimal getRateOfReturnValueOfPortfolio(Portfolio portfolio){
-        List<Investment> investments = portfolio.getInvestments();
+    private BigDecimal getRateOfReturnValueOfPortfolio(List<Investment> investments){
         double sumOfResult = 0d;
         for (Investment in: investments)
             sumOfResult += (in.getResult().getRateOfReturnValue().doubleValue());
         return BigDecimal.valueOf(sumOfResult);
     }
-    private BigDecimal getTotalInvesteCashInPortfolio(Portfolio portfolio){
-        List<Investment> investments = portfolio.getInvestments();
+    private BigDecimal getTotalInvesteCashInPortfolio(List<Investment> investments){
         double sumOfInvestedMoney = 0d;
         for (Investment in: investments) {
             double investedMoney = in.getSysematicDepositValue()*(in.getDurationInYears()/in.getFrequneceInYear())+in.getInitialDepositValue();

@@ -39,7 +39,7 @@ public class PorfolioController {
     }
     @GetMapping(path = "/all-investments-details")
     public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
-        return new PortfolioDetailsDTO();
+        return portfolioService.getPortfolioAllInvestmentsDetails();
     }
 
     @GetMapping
