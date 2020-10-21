@@ -24,7 +24,7 @@ spec:
         - name: fintech-docker-secret
       containers:
         - name: fin-calc-service
-          image: metis-team-docker-registry.fintechchallenge.pl/metis-team/fin-calc-service:latest
+          image: metis-team-docker-registry.fintechchallenge.pl/metis-team/fin-calc-service:image_version_placeholder
           imagePullPolicy: Always
           ports:
             - name: api
