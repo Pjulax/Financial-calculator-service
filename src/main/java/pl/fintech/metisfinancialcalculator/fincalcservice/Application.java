@@ -10,12 +10,14 @@ import org.springframework.context.annotation.Bean;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Role;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.UserService;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 @SpringBootApplication
 @EnableJpaRepositories
+@EnableSwagger2
 public class Application implements CommandLineRunner { // implemented interface is to delete after auth done
 
     // user service is to delete after auth done
