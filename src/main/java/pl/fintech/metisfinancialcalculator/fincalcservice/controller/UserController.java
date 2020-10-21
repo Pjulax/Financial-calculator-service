@@ -13,9 +13,9 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Api(tags = "users")
 @RestController
 @RequestMapping("/users")
-@Api(tags = "users")
 public class UserController {
 
     @Autowired
