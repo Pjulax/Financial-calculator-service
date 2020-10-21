@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 public class InvestmentDetailsDTO {
     private String name;
-    private Date startDate;
     private String category;
     private Double risk;
     private Double initialDepositValue;

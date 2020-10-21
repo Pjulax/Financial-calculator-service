@@ -35,11 +35,11 @@ public class PorfolioController {
 
     @GetMapping(path = "/details")
     public PortfolioDetailsDTO getPorfolioDetails(@RequestParam(value = "id") Long porfolio_id){//TODO
-        return new PortfolioDetailsDTO();
+        return portfolioService.getPorfolioDetails(porfolio_id);
     }
     @GetMapping(path = "/all-investments-details")
     public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
-        return new PortfolioDetailsDTO();
+        return portfolioService.getPortfolioAllInvestmentsDetails();
     }
 
     @GetMapping
@@ -53,13 +53,13 @@ public class PorfolioController {
     }
 
     @PutMapping
-    public void modifyPorfolio(@RequestParam(value = "id") Long porfolio_id){//TODO
-
+    public Portfolio modifyPorfolio(@RequestParam(value="new-name") String name, @RequestParam(value = "id") Long porfolio_id){
+        return portfolioService.modifyPortfolio(porfolio_id, name);
     }
 
     @DeleteMapping
     public void removePorfolio(@RequestParam(value = "id") Long porfolio_id){//TODO
-
+        portfolioService.removePortfolio(porfolio_id);
     }
 
 }
