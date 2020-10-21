@@ -21,8 +21,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-
-
     @Configuration
     @Order(1)
     public static class BasicAuthConfigurationAdapter extends WebSecurityConfigurerAdapter {
