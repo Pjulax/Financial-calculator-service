@@ -1,6 +1,5 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.model;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,4 +21,5 @@ public class User {//TODO
 
     @OneToMany()
     private List<Portfolio> portfolios;
+
 }
