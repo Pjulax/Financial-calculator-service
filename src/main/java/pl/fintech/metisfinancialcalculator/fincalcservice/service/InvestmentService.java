@@ -45,7 +45,6 @@ public class InvestmentService {
         investment.setRisk(null);
         investment.setName(null);
         // values from parameters
-        investment.setStartDate(Calendar.getInstance().getTime());
         investment.setInitialDepositValue(parameters.getInitialDepositValue());
         investment.setSystematicDepositValue(parameters.getSystematicDepositValue());
         investment.setDurationInYears(parameters.getDurationInYears());
@@ -67,18 +66,15 @@ public class InvestmentService {
         investment.setCategory(investmentDetailsDTO.getCategory());
         investment.setRisk(investmentDetailsDTO.getRisk());
         investment.setName(investmentDetailsDTO.getName());
-        investment.setStartDate(investmentDetailsDTO.getStartDate());
         investment.setInitialDepositValue(investmentDetailsDTO.getInitialDepositValue());
         investment.setFrequneceInYear(investmentDetailsDTO.getFrequenceInYear());
         investment.setReturnOfInvestment(investmentDetailsDTO.getReturnOfInvestmentPercentage());
         investment.setSysematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
 
-        long duration =  investmentDetailsDTO.getDurationInYears().longValue();
-        duration = duration*((long)364.25)*24*60*1000;
-        investment.setDuration(new Date(duration));
+
+        investment.setDurationInYears(investmentDetailsDTO.getDurationInYears());
         //setting parameters for new result
         InvestmentParametersDTO investmentParametersDTO = new InvestmentParametersDTO();
-        investmentParametersDTO.setStartDate(investmentDetailsDTO.getStartDate().toString());
         investmentParametersDTO.setDurationInYears(investmentDetailsDTO.getDurationInYears());
         investmentParametersDTO.setFrequenceInYear(investmentDetailsDTO.getFrequenceInYear());
         investmentParametersDTO.setInitialDepositValue(investmentDetailsDTO.getInitialDepositValue());

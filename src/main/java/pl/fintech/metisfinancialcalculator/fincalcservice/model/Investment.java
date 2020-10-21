@@ -17,7 +17,6 @@ public class Investment {
     @GeneratedValue()
     private Long id;
     private String name;
-    private Date startDate;
 
 //    Category to String, further I can change it back to Category
 //    @ManyToOne(fetch = FetchType.LAZY)
@@ -31,8 +30,7 @@ public class Investment {
     private Double frequneceInYear;
     private Double returnOfInvestment;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date duration;
+    private Double durationInYears;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Result result;
