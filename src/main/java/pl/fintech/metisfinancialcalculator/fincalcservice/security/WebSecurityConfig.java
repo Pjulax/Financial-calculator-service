@@ -32,13 +32,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
 
             // Disable CSRF (cross site request forgery)
-            http.csrf().disable();
+            http.cors(withDefaults())
+                    .csrf().disable();
 
             // No session will be created or used by spring security
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
             // Entry points
-            http.antMatcher("/users/signin")
+            http.antMatcher("/api/users/signin")
                 .authorizeRequests(authorize -> authorize
                     .anyRequest().hasAnyRole("USER","ADMIN"));
                     // Disallow everything else..
@@ -62,20 +63,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
 
             // Disable CSRF (cross site request forgery)
-            http.csrf().disable();
+            http.cors(withDefaults())
+                    .csrf().disable();
 
             // No session will be created or used by spring security
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
             // Entry points
             http.authorizeRequests()//
-                    .antMatchers("/v2/api-docs").permitAll()
-                    .antMatchers("/swagger-resources").permitAll()
-                    .antMatchers("/swagger-resources/configuration/ui").permitAll()
-                    .antMatchers("/swagger-resources/configuration/security").permitAll()
-                    .antMatchers("/users/signin").permitAll()//
-                    .antMatchers("/users/signup").permitAll()//
-                    .antMatchers("/h2-console/**/**").permitAll()
+                    .antMatchers("/api/v2/api-docs").permitAll()
+                    .antMatchers("/api/swagger-resources").permitAll()
+                    .antMatchers("/api/swagger-resources/configuration/ui").permitAll()
+                    .antMatchers("/api/swagger-resources/configuration/security").permitAll()
+                    .antMatchers("/api/users/signin").permitAll()//
+                    .antMatchers("/api/users/signup").permitAll()//
+                    .antMatchers("/api/h2-console/**/**").permitAll()
                     // Disallow everything else..
                     .anyRequest().authenticated();
 
@@ -93,17 +95,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // Allow swagger to be accessed without authentication
-        web.ignoring().antMatchers("/v2/api-docs")//
-                .antMatchers("/swagger-resources/**")//
-                .antMatchers("/swagger-ui.html")//
-                .antMatchers("/configuration/**")//
-                .antMatchers("/webjars/**")//
-                .antMatchers("/public")//;
+        web.ignoring().antMatchers("/api/v2/api-docs")//
+                .antMatchers("/api/swagger-resources/**")//
+                .antMatchers("/api/swagger-ui.html")//
+                .antMatchers("/api/configuration/**")//
+                .antMatchers("/api/webjars/**")//
+                .antMatchers("/api/public")//;
 
                 // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
                 .and()
                 .ignoring()
-                .antMatchers("/h2-console/**/**");
+                .antMatchers("/api/h2-console/**/**");
     }
 
     @Bean
