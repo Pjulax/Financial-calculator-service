@@ -13,7 +13,7 @@ import java.util.List;
 
 //c@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/porfolios")
+@RequestMapping("/api/porfolios")
 public class PorfolioController {
 
     @Autowired
