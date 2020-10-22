@@ -28,7 +28,6 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.any())//
                 .paths(Predicates.not(PathSelectors.regex("/error")))//
                 .build()//
-                .pathMapping("/api/swagger")
                 .apiInfo(metadata())//
                 .useDefaultResponseMessages(false)//
                 .securitySchemes(Collections.singletonList(apiKey()))

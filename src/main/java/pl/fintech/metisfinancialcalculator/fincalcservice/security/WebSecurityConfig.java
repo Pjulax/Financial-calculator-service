@@ -1,6 +1,7 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -13,6 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -55,6 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Order(2)
     public static class JwtConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
+        @Value("${management.server.port}")
+        private int managementPort;
+
         @Autowired
         private  JwtTokenProvider jwtTokenProvider;
 
@@ -76,6 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/users/signin").permitAll()//
                     .antMatchers("/users/signup").permitAll()//
                     .antMatchers("/h2-console/**/**").permitAll()
+                    .requestMatchers(checkPort(managementPort)).permitAll()
                     // Disallow everything else..
                     .anyRequest().authenticated();
 
@@ -88,6 +96,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // Optional, if you want to test the API from a browser
             // http.httpBasic();
         }
+
+        private RequestMatcher checkPort(final int port) {
+            return (HttpServletRequest request) -> port == request.getLocalPort();
+        }
     }
 
     @Override
@@ -99,6 +111,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/configuration/**")//
                 .antMatchers("/webjars/**")//
                 .antMatchers("/public")//;
+
 
                 // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
                 .and()

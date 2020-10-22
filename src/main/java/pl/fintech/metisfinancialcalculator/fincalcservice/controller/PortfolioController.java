@@ -6,18 +6,18 @@ import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PorfolioRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.PortfolioService;
 
 import java.util.List;
 
 //c@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/porfolios")
-public class PorfolioController {
+@RequestMapping("/portfolios")
+public class PortfolioController {
 
     @Autowired
-    PorfolioRepository porfolioRepository;
+    PortfolioRepository portfolioRepository;
 
     @Autowired
     PortfolioService portfolioService;
@@ -34,8 +34,8 @@ public class PorfolioController {
     }
 
     @GetMapping(path = "/details")
-    public PortfolioDetailsDTO getPorfolioDetails(@RequestParam(value = "id") Long porfolio_id){//TODO
-        return portfolioService.getPorfolioDetails(porfolio_id);
+    public PortfolioDetailsDTO getPortfolioDetails(@RequestParam(value = "id") Long portfolio_id){//TODO
+        return portfolioService.getPortfolioDetails(portfolio_id);
     }
     @GetMapping(path = "/all-investments-details")
     public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
@@ -44,22 +44,22 @@ public class PorfolioController {
 
     @GetMapping
     public Portfolio getPortfolio(@RequestParam(value = "id") Long portfolio_id){//TODO to remove only to tests
-        return porfolioRepository.findById(portfolio_id).orElse(null);
+        return portfolioRepository.findById(portfolio_id).orElse(null);
     }
 
     @PostMapping
-    public Portfolio createPorfolio(@RequestParam(value = "name") String name){//TODO
+    public Portfolio createPortfolio(@RequestParam(value = "name") String name){//TODO
         return portfolioService.createPortfolio(name);
     }
 
     @PutMapping
-    public Portfolio modifyPorfolio(@RequestParam(value="new-name") String name, @RequestParam(value = "id") Long porfolio_id){
-        return portfolioService.modifyPortfolio(porfolio_id, name);
+    public Portfolio modifyPortfolio(@RequestParam(value="new-name") String name, @RequestParam(value = "id") Long portfolio_id){
+        return portfolioService.modifyPortfolio(portfolio_id, name);
     }
 
     @DeleteMapping
-    public void removePorfolio(@RequestParam(value = "id") Long porfolio_id){//TODO
-        portfolioService.removePortfolio(porfolio_id);
+    public void removePortfolio(@RequestParam(value = "id") Long portfolio_id){//TODO
+        portfolioService.removePortfolio(portfolio_id);
     }
 
 }

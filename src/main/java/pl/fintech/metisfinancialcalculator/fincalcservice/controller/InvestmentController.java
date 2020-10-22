@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/investments")
+@RequestMapping("/investments")
 public class InvestmentController {
 
     @GetMapping("/hello")
@@ -47,8 +47,8 @@ public class InvestmentController {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Investment addInvestment(@RequestBody InvestmentDetailsDTO investmentDTO, @RequestParam(value = "id") Long porfolio_id){//TODO
-        return portfolioService.addInvestment(investmentDTO,porfolio_id);
+    public Investment addInvestment(@RequestBody InvestmentDetailsDTO investmentDTO, @RequestParam(value = "id") Long portfolio_id){//TODO
+        return portfolioService.addInvestment(investmentDTO,portfolio_id);
     }
 
     @PutMapping
