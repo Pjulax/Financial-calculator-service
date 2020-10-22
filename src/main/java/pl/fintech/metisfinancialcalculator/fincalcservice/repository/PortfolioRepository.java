@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 
 @Repository
-public interface PorfolioRepository extends JpaRepository<Portfolio, Long> {
+public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
 }

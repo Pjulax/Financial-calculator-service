@@ -16,5 +16,5 @@ public class PortfolioDetailsDTO {
     private BigDecimal totalInvestedCash;
     private BigDecimal RateOfReturnPercentage;
     private List<GraphPoint> graphPointsValue;
-    private List<InvestmentInPorfolioDTO> investmentDTOS;
+    private List<InvestmentInPortfolioDTO> investmentDTOS;
 }

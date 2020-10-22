@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class InvestmentInPorfolioDTO {
+public class InvestmentInPortfolioDTO {
     private Long id;
     private String name;
     private Double risk;
