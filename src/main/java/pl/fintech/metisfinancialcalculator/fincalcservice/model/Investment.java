@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 @NoArgsConstructor
@@ -26,8 +24,8 @@ public class Investment {
 
     private Double risk;
     private Double initialDepositValue;
-    private Double sysematicDepositValue;
-    private Double frequneceInYear;
+    private Double systematicDepositValue;
+    private Double frequencyInYears;
     private Double returnOfInvestment;
 
     private Double durationInYears;

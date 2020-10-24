@@ -26,8 +26,8 @@ public class Result {
     private Double rateOfReturnPercentage;
     private Double returnOfInvestment;
 
-    private XDateType xAxisDataType;
-    private YValueType yAxisDataType;
+    private XDateType XAxisDataType;
+    private YValueType YAxisDataType;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<GraphPoint> graphPointValues;

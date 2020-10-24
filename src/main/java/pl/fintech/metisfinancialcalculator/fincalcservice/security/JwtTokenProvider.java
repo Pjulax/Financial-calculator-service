@@ -20,7 +20,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +41,7 @@ public class JwtTokenProvider {
     private Key key;
 
     @Value("${security.jwt.token.expire-length:3600000}")
-    private long validityInMilliseconds = 3600000; // 1h
+    private final long validityInMilliseconds = 3600000; // 1h
 
     @Autowired
     private MyUserDetails myUserDetails;

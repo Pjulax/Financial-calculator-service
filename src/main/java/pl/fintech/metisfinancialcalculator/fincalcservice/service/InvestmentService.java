@@ -7,12 +7,8 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParamete
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRespotiory;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRepository;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,15 +16,15 @@ public class InvestmentService {
 
     InvestmentRepository investmentRepository;
 
-    ResultRespotiory resultRespotiory;
+    ResultRepository resultRepository;
 
     @Autowired
     Calculator calculator;
 
     @Autowired
-    public InvestmentService(InvestmentRepository investmentRepository, ResultRespotiory resultRespotiory){
+    public InvestmentService(InvestmentRepository investmentRepository, ResultRepository resultRepository){
         this.investmentRepository = investmentRepository;
-        this.resultRespotiory = resultRespotiory;
+        this.resultRepository = resultRepository;
     }
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
@@ -48,15 +44,15 @@ public class InvestmentService {
         investment.setInitialDepositValue(parameters.getInitialDepositValue());
         investment.setSystematicDepositValue(parameters.getSystematicDepositValue());
         investment.setDurationInYears(parameters.getDurationInYears());
-        investment.setFrequenceInYear(parameters.getFrequenceInYear());
+        investment.setFrequencyInYears(parameters.getFrequencyInYears());
         investment.setReturnOfInvestmentPercentage(parameters.getReturnOfInvestment());
         // values from result
         Result result = calculator.calculateInvestment(parameters);
         investment.setRateOfReturnValue(result.getRateOfReturnValue());
         investment.setRateOfReturnPercentage(result.getRateOfReturnPercentage());
         investment.setGraphPointsValue(result.getGraphPointValues());
-        investment.setXaxisDataType(result.getXAxisDataType());
-        investment.setYaxisDataType(result.getYAxisDataType());
+        investment.setXAxisDataType(result.getXAxisDataType());
+        investment.setYAxisDataType(result.getYAxisDataType());
         return investment;
     }
     public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
@@ -67,16 +63,16 @@ public class InvestmentService {
         investment.setRisk(investmentDetailsDTO.getRisk());
         investment.setName(investmentDetailsDTO.getName());
         investment.setInitialDepositValue(investmentDetailsDTO.getInitialDepositValue());
-        investment.setFrequneceInYear(investmentDetailsDTO.getFrequenceInYear());
+        investment.setFrequencyInYears(investmentDetailsDTO.getFrequencyInYears());
         investment.setReturnOfInvestment(investmentDetailsDTO.getReturnOfInvestmentPercentage());
-        investment.setSysematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
+        investment.setSystematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
 
 
         investment.setDurationInYears(investmentDetailsDTO.getDurationInYears());
         //setting parameters for new result
         InvestmentParametersDTO investmentParametersDTO = new InvestmentParametersDTO();
         investmentParametersDTO.setDurationInYears(investmentDetailsDTO.getDurationInYears());
-        investmentParametersDTO.setFrequenceInYear(investmentDetailsDTO.getFrequenceInYear());
+        investmentParametersDTO.setFrequencyInYears(investmentDetailsDTO.getFrequencyInYears());
         investmentParametersDTO.setInitialDepositValue(investmentDetailsDTO.getInitialDepositValue());
         investmentParametersDTO.setReturnOfInvestment(investmentDetailsDTO.getReturnOfInvestmentPercentage());
         investmentParametersDTO.setSystematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
