@@ -119,6 +119,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**/**")
                 .and()
                 .ignoring()
+                .antMatchers("/portfolios")
+                .antMatchers("/investments")
                 .antMatchers("/portfolios/**")
                 .antMatchers("/investments/**");
     }
