@@ -8,10 +8,6 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: RollingUpdate # recreate is second option and is without next 3 lines
-    rollingUpdate:
-      maxSurge: 1       # how many pods we can add at a time
-      maxUnavailable: 1 # maxUnavailable define how many pods can be unavailable during the rolling update
   selector:
     matchLabels:
       app: fin-calc-service

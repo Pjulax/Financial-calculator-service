@@ -76,7 +76,6 @@ pipeline {
                     withCredentials([file(credentialsId: 'kubeconfig-sit', variable: 'KUBECONFIG')]) {
                         sh "kubectl apply -f ./kubernetes-sit.yaml"
                         sh "kubectl rollout restart deployment fin-calc-service"
-                        sh "kubectl rollout status deployment fin-calc-service --timeout=2m00s"
                     }
                 }
             }
@@ -94,7 +93,6 @@ pipeline {
                     withCredentials([file(credentialsId: 'kubeconfig-uat', variable: 'KUBECONFIG')]) {
                         sh "kubectl apply -f ./kubernetes-uat.yaml"
                         sh "kubectl rollout restart deployment fin-calc-service"
-                        sh "kubectl rollout status deployment fin-calc-service --timeout=2m00s"
                     }
                 }
             }
