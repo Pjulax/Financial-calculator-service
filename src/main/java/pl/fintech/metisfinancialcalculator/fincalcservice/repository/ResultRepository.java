@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 
 @Repository
-public interface ResultRespotiory extends JpaRepository<Result, Long> {
+public interface ResultRepository extends JpaRepository<Result, Long> {
 }

@@ -22,29 +22,19 @@ public class PortfolioController {
     @Autowired
     PortfolioService portfolioService;
 
-    @GetMapping("/hello")
-    public String hello(){
-        return "Welcome in portfolios";
-
-    }
-
     @GetMapping(path = "/names")
     public List<PortfolioNameDTO> getAllPortfoliosNames(){//TODO
-        return portfolioService.getAllPortfioliosNames();
+        return portfolioService.getAllPortfoliosNames();
     }
 
-    @GetMapping(path = "/details")
-    public PortfolioDetailsDTO getPortfolioDetails(@RequestParam(value = "id") Long portfolio_id){//TODO
-        return portfolioService.getPortfolioDetails(portfolio_id);
-    }
     @GetMapping(path = "/all-investments-details")
     public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
         return portfolioService.getPortfolioAllInvestmentsDetails();
     }
 
     @GetMapping
-    public Portfolio getPortfolio(@RequestParam(value = "id") Long portfolio_id){//TODO to remove only to tests
-        return portfolioRepository.findById(portfolio_id).orElse(null);
+    public PortfolioDetailsDTO getPortfolio(@RequestParam(value = "id") Long portfolio_id){
+        return portfolioService.getPortfolioDetails(portfolio_id);
     }
 
     @PostMapping

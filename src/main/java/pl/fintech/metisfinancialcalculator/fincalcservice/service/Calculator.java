@@ -1,8 +1,8 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.service;
+
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
-
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.XDateType;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.GraphPoint;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
@@ -10,9 +10,6 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-
-
-import java.util.List;
 
 import static pl.fintech.metisfinancialcalculator.fincalcservice.enums.YValueType.POUNDS;
 
@@ -33,7 +30,7 @@ public class Calculator {
         ArrayList<GraphPoint> graphPoints = new ArrayList<>();
         graphPoints.add(new GraphPoint(0.0, parameters.getInitialDepositValue()));
         BigDecimal systematicDeposit = new BigDecimal(parameters.getSystematicDepositValue().toString());
-        for(double i = parameters.getFrequenceInYear(); i <= parameters.getDurationInYears(); i += parameters.getFrequenceInYear()){
+        for(double i = parameters.getFrequencyInYears(); i <= parameters.getDurationInYears(); i += parameters.getFrequencyInYears()){
             resultFVWithCashFlow = resultFVWithCashFlow.add(
                                                         systematicDeposit.multiply(
                                                                 BigDecimal.valueOf(
@@ -48,11 +45,11 @@ public class Calculator {
         Result result = new Result();
         BigDecimal systematicDeposit = new BigDecimal(investment.getSystematicDepositValue().toString());
 
-        // invested money = initial + (systematicDepositValue * (DurationInYears * FrequenceInYear))
+        // invested money = initial + (systematicDepositValue * (DurationInYears * FrequencyInYear))
         BigDecimal investedMoney = new BigDecimal(investment.getInitialDepositValue().toString());
         investedMoney = investedMoney.add(
                 systematicDeposit.multiply(
-                BigDecimal.valueOf(investment.getDurationInYears()/investment.getFrequenceInYear())));
+                BigDecimal.valueOf(investment.getDurationInYears()/investment.getFrequencyInYears())));
 
         // setting members of result
         result.setReturnOfInvestment(investment.getReturnOfInvestment());

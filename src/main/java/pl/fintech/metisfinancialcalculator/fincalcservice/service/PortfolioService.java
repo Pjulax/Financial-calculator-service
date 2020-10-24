@@ -16,10 +16,12 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.GraphPointRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRespotiory;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRepository;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -27,20 +29,20 @@ import java.util.stream.Collectors;
 public class PortfolioService {
     InvestmentRepository investmentRepository;
     PortfolioRepository portfolioRepository;
-    ResultRespotiory resultRespotiory;
+    ResultRepository resultRepository;
     GraphPointRepository graphPointRepository;
 
     @Autowired
-    public PortfolioService(PortfolioRepository portfolioRepository, InvestmentRepository investmentRepository, ResultRespotiory resultRespotiory){
+    public PortfolioService(PortfolioRepository portfolioRepository, InvestmentRepository investmentRepository, ResultRepository resultRepository){
         this.portfolioRepository = portfolioRepository;
         this.investmentRepository = investmentRepository;
-        this.resultRespotiory = resultRespotiory;
+        this.resultRepository = resultRepository;
     }
 
-    public List<Investment> getPortfiolioInvestments(){//TODO
+    public List<Investment> getPortfolioInvestments(){//TODO
         return List.of();
     }
-    public List<Portfolio> getAllPortfiolios(){//TODO
+    public List<Portfolio> getAllPortfolios(){//TODO
         return List.of();
     }
 
@@ -53,10 +55,10 @@ public class PortfolioService {
         Investment investment = new Investment();
         //parameters
         investment.setDurationInYears(investmentDTO.getDurationInYears());
-        investment.setFrequneceInYear(investmentDTO.getFrequenceInYear());
+        investment.setFrequencyInYears(investmentDTO.getFrequencyInYears());
         investment.setInitialDepositValue(investmentDTO.getInitialDepositValue());
         investment.setReturnOfInvestment(investmentDTO.getReturnOfInvestmentPercentage());
-        investment.setSysematicDepositValue(investmentDTO.getSystematicDepositValue());
+        investment.setSystematicDepositValue(investmentDTO.getSystematicDepositValue());
         //result
         Result result = new Result();
 
@@ -107,10 +109,10 @@ public class PortfolioService {
         List<Investment> investments = portfolio.getInvestments();
 
         portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPortfolio(investments));
-        portfolioDetailsDTO.setInvestmentDTOS(investmentInPortfolioDTOS(investments));
+        portfolioDetailsDTO.setInvestments(investmentInPortfolioDTO(investments));
         portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(investments));
         portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(investments));
-        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvesteCashInPortfolio(investments));
+        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvestedCashInPortfolio(investments));
         return portfolioDetailsDTO;
     }
 
@@ -122,10 +124,10 @@ public class PortfolioService {
         }
         PortfolioDetailsDTO portfolioDetailsDTO = new PortfolioDetailsDTO();
         portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPortfolio(investments));
-        portfolioDetailsDTO.setInvestmentDTOS(investmentInPortfolioDTOS(investments));
+        portfolioDetailsDTO.setInvestments(investmentInPortfolioDTO(investments));
         portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(investments));
         portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(investments));
-        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvesteCashInPortfolio(investments));
+        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvestedCashInPortfolio(investments));
         return portfolioDetailsDTO;
     }
 
@@ -138,8 +140,8 @@ public class PortfolioService {
         investments.sort( (o1, o2) -> o2.getDurationInYears().compareTo(o1.getDurationInYears()));
         double maxDuration = investments.get(0).getDurationInYears();
 
-        investments.sort(Comparator.comparing(Investment::getFrequneceInYear));
-        double minInterval = investments.get(0).getFrequneceInYear();
+        investments.sort(Comparator.comparing(Investment::getFrequencyInYears));
+        double minInterval = investments.get(0).getFrequencyInYears();
 
         for(double i = 0.0; i<maxDuration; i+=minInterval){
             GraphPoint gp = new GraphPoint(i, 0d);
@@ -155,8 +157,8 @@ public class PortfolioService {
         }
         return graphPoints;
     }
-    private List<InvestmentInPortfolioDTO> investmentInPortfolioDTOS(List<Investment> investments){
-        List<InvestmentInPortfolioDTO> investmentInPortfolioDTOS = new ArrayList<>();
+    private List<InvestmentInPortfolioDTO> investmentInPortfolioDTO(List<Investment> investments){
+        List<InvestmentInPortfolioDTO> investmentInPortfolioDTO = new ArrayList<>();
 
         for (Investment in: investments
              ) {
@@ -166,19 +168,19 @@ public class PortfolioService {
             inPortfolioDTO.setId(in.getId());
             inPortfolioDTO.setName(in.getName());
             inPortfolioDTO.setRateOfReturnPercentage(in.getResult().getRateOfReturnPercentage());
-            inPortfolioDTO.setXaxisDataType(XDateType.YEAR);
-            inPortfolioDTO.setYaxisDataType(YValueType.POUNDS);
+            inPortfolioDTO.setXAxisDataType(XDateType.YEAR);
+            inPortfolioDTO.setYAxisDataType(YValueType.POUNDS);
             inPortfolioDTO.setRisk(in.getRisk());
-            investmentInPortfolioDTOS.add(inPortfolioDTO);
+            investmentInPortfolioDTO.add(inPortfolioDTO);
         }
-        return investmentInPortfolioDTOS;
+        return investmentInPortfolioDTO;
     }
     private BigDecimal getRateOfReturnOfPortfolio(List<Investment> investments){
-        //(1200÷1000−1)÷(3÷12) = (k-p-1)/(frequence)
+        //(1200÷1000−1)÷(3÷12) = (k-p-1)/(frequency)
         double sumOfInvestedMoney = 0d;
         double sumOfResult = 0d;
         for (Investment in: investments) {
-            double investedMoney = in.getSysematicDepositValue()*(in.getDurationInYears()/in.getFrequneceInYear())+in.getInitialDepositValue();
+            double investedMoney = in.getSystematicDepositValue()*(in.getDurationInYears()/in.getFrequencyInYears())+in.getInitialDepositValue();
             sumOfInvestedMoney += investedMoney;
             sumOfResult += (investedMoney+in.getResult().getRateOfReturnValue().doubleValue());
         }
@@ -194,17 +196,17 @@ public class PortfolioService {
             sumOfResult += (in.getResult().getRateOfReturnValue().doubleValue());
         return BigDecimal.valueOf(sumOfResult);
     }
-    private BigDecimal getTotalInvesteCashInPortfolio(List<Investment> investments){
+    private BigDecimal getTotalInvestedCashInPortfolio(List<Investment> investments){
         double sumOfInvestedMoney = 0d;
         for (Investment in: investments) {
-            double investedMoney = in.getSysematicDepositValue()*(in.getDurationInYears()/in.getFrequneceInYear())+in.getInitialDepositValue();
+            double investedMoney = in.getSystematicDepositValue()*(in.getDurationInYears()/in.getFrequencyInYears())+in.getInitialDepositValue();
             sumOfInvestedMoney += investedMoney;
         }
         return BigDecimal.valueOf(sumOfInvestedMoney);
     }
 
 
-    public List<PortfolioNameDTO> getAllPortfioliosNames() {
+    public List<PortfolioNameDTO> getAllPortfoliosNames() {
         return portfolioRepository.findAll().stream().map(p->new PortfolioNameDTO(p.getId(),p.getName())).collect(Collectors.toList());
     }
 }

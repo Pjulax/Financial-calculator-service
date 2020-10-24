@@ -23,11 +23,6 @@ import java.util.Optional;
 @RequestMapping("/investments")
 public class InvestmentController {
 
-    @GetMapping("/hello")
-    public String hello(){
-        return "Welcome in investments";
-    }
-
     @Autowired
     InvestmentService investmentService;
 
@@ -35,7 +30,7 @@ public class InvestmentController {
     PortfolioService portfolioService;
 
     @GetMapping
-    public InvestmentDetailsDTO getInvestmnentDetails(@RequestParam(value = "id") Long investment_id){//TODO
+    public InvestmentDetailsDTO getInvestmentDetails(@RequestParam(value = "id") Long investment_id){//TODO
         return new InvestmentDetailsDTO();
     }
 
