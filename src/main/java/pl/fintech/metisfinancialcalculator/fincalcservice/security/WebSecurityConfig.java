@@ -83,6 +83,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/users/signin").permitAll()//
                     .antMatchers("/users/signup").permitAll()//
                     .antMatchers("/h2-console/**/**").permitAll()
+
+                    .antMatchers("/portfolios").permitAll()
+                    .antMatchers("/investments").permitAll()
+                    .antMatchers("/portfolios/**").permitAll()
+                    .antMatchers("/investments/**").permitAll()
                     .requestMatchers(checkPort(managementPort)).permitAll()
                     // Disallow everything else..
                     .anyRequest().authenticated();
@@ -116,13 +121,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
                 .and()
                 .ignoring()
-                .antMatchers("/h2-console/**/**")
-                .and()
-                .ignoring()
-                .antMatchers("/portfolios")
-                .antMatchers("/investments")
-                .antMatchers("/portfolios/**")
-                .antMatchers("/investments/**");
+                .antMatchers("/h2-console/**/**");
+
     }
 
     @Bean
