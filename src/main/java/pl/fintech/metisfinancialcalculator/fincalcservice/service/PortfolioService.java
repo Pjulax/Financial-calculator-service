@@ -182,6 +182,9 @@ public class PortfolioService {
             sumOfInvestedMoney += investedMoney;
             sumOfResult += (investedMoney+in.getResult().getRateOfReturnValue().doubleValue());
         }
+        if(sumOfInvestedMoney == 0){
+            return null;
+        }
         double result = sumOfResult/sumOfInvestedMoney-1;
         return BigDecimal.valueOf(result);
     }
