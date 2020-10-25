@@ -47,6 +47,7 @@ public class InvestmentService {
         investmentDetailsDTO.setXAxisDataType(result.getXAxisDataType());
         investmentDetailsDTO.setYAxisDataType(result.getYAxisDataType());
         investmentDetailsDTO.setGraphPointsValue(result.getGraphPointValues());
+        return investmentDetailsDTO;
     }
     public List<Investment> getAllInvestments(){
         return investmentRepository.findAll();
