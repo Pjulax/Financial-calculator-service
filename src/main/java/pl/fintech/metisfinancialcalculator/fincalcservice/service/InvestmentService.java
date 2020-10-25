@@ -40,7 +40,7 @@ public class InvestmentService {
         investmentDetailsDTO.setRateOfReturnValue(result.getRateOfReturnValue());
         investmentDetailsDTO.setDurationInYears(investment.getDurationInYears());
         investmentDetailsDTO.setFrequencyInYears(investment.getFrequencyInYears());
-        investmentDetailsDTO.setInitialDepositValue(investment.getInitialDepositValue();
+        investmentDetailsDTO.setInitialDepositValue(investment.getInitialDepositValue());
         investmentDetailsDTO.setRisk(investment.getRisk());
         investmentDetailsDTO.setCategory(investment.getCategory());
         investmentDetailsDTO.setSystematicDepositValue(investment.getSystematicDepositValue());
