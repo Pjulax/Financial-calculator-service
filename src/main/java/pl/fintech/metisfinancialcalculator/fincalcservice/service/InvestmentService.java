@@ -28,7 +28,26 @@ public class InvestmentService {
     }
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
-        return new InvestmentDetailsDTO(); //TODO
+        Investment investment = investmentRepository.findById(investment_id).orElse(null);
+        if(investment==null){
+            return new InvestmentDetailsDTO();
+        }
+        InvestmentDetailsDTO investmentDetailsDTO = new InvestmentDetailsDTO();
+        Result result = investment.getResult();
+        investmentDetailsDTO.setName(investment.getName());
+        investmentDetailsDTO.setReturnOfInvestmentPercentage(investment.getReturnOfInvestment());
+        investmentDetailsDTO.setRateOfReturnPercentage(result.getRateOfReturnPercentage());
+        investmentDetailsDTO.setRateOfReturnValue(result.getRateOfReturnValue());
+        investmentDetailsDTO.setDurationInYears(investment.getDurationInYears());
+        investmentDetailsDTO.setFrequencyInYears(investment.getFrequencyInYears());
+        investmentDetailsDTO.setInitialDepositValue(investment.getInitialDepositValue());
+        investmentDetailsDTO.setRisk(investment.getRisk());
+        investmentDetailsDTO.setCategory(investment.getCategory());
+        investmentDetailsDTO.setSystematicDepositValue(investment.getSystematicDepositValue());
+        investmentDetailsDTO.setXAxisDataType(result.getXAxisDataType());
+        investmentDetailsDTO.setYAxisDataType(result.getYAxisDataType());
+        investmentDetailsDTO.setGraphPointsValue(result.getGraphPointValues());
+        return investmentDetailsDTO;
     }
     public List<Investment> getAllInvestments(){
         return investmentRepository.findAll();
