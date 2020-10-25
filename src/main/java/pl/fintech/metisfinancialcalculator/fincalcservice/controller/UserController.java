@@ -30,7 +30,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "Something went wrong"), //
             @ApiResponse(code = 403, message = "Access denied"), //
             @ApiResponse(code = 422, message = "Username is already in use")})
-    public String signup(/*@ApiParam("Signup User")*/ @RequestBody UserDataDTO user) {
+    public String signup(@ApiParam("Signup User") @RequestBody UserDataDTO user) {
         return userService.signup(modelMapper.map(user, User.class));
     }
 
@@ -38,10 +38,9 @@ public class UserController {
     @ApiOperation(value = "${UserController.signin}")
     @ApiResponses(value = {//
             @ApiResponse(code = 400, message = "Something went wrong"), //
-            @ApiResponse(code = 401, message = "Unauthorized"), //
-            @ApiResponse(code = 403, message = "Forbidden")})
-    public String login() {
-        return userService.signin(SecurityContextHolder.getContext().getAuthentication().getName());
+            @ApiResponse(code = 422, message = "Invalid username/password supplied")})
+    public String login(@ApiParam("Signin User") @RequestBody UserDataDTO user) {
+        return userService.signin(modelMapper.map(user, User.class));
     }
 
     @DeleteMapping(value = "/{username}")
