@@ -31,7 +31,7 @@ public class InvestmentController {
 
     @GetMapping
     public InvestmentDetailsDTO getInvestmentDetails(@RequestParam(value = "id") Long investment_id){//TODO
-        return new InvestmentDetailsDTO();
+        return investmentService.getInvestment(investment_id);
     }
 
 
