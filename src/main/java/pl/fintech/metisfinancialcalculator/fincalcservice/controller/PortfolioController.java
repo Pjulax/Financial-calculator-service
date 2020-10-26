@@ -25,7 +25,7 @@ public class PortfolioController {
 
     @GetMapping(path = "/names")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    public List<PortfolioNameDTO> getAllPortfoliosNames(){//TODO
+    public List<PortfolioNameDTO> getAllPortfoliosNames(){
         return portfolioService.getAllPortfoliosNames();
     }
 
@@ -44,7 +44,7 @@ public class PortfolioController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    public Portfolio createPortfolio(@RequestParam(value = "name") String name){//TODO
+    public Portfolio createPortfolio(@RequestParam(value = "name") String name){
         return portfolioService.createPortfolio(name);
     }
 
@@ -56,7 +56,7 @@ public class PortfolioController {
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    public void removePortfolio(@RequestParam(value = "id") Long portfolio_id){//TODO
+    public void removePortfolio(@RequestParam(value = "id") Long portfolio_id){
         portfolioService.removePortfolio(portfolio_id);
     }
 
