@@ -2,6 +2,7 @@ package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentInPortfolioDTO;
@@ -9,6 +10,7 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDT
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.XDateType;
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.YValueType;
+import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.*;
 
@@ -45,7 +47,7 @@ public class PortfolioService {
         return List.of();
     }
 
-    public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Long portfolio_id){//TODO
+    public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Long portfolio_id){
 
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
         if(portfolio==null) {
@@ -97,34 +99,59 @@ public class PortfolioService {
         userRepository.save(user);
         return  portfolio;
     }
+
     public Portfolio modifyPortfolio(Long portfolio_id, String newName){
+        User user = userService.whoami();
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
-        if(portfolio==null)
-            return new Portfolio();
-        portfolio.setName(newName);
-        return portfolioRepository.save(portfolio);
+        if(null==portfolio)
+            return new Portfolio(); // throw new CustomException("The portfolio doesn't exist.", HttpStatus.NOT_FOUND);
+        List<Portfolio> portfolios = user.getPortfolios();
+        if (portfolios.contains(portfolio)) {
+            portfolio.setName(newName);
+            return portfolioRepository.save(portfolio);
+        }
+        return new Portfolio(); // throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND); // or HttpStatus.UNAUTHORIZED
     }
+
     public void removePortfolio(Long portfolio_id){
-        portfolioRepository.deleteById(portfolio_id);
+        User user = userService.whoami();
+        Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
+        if(null==portfolio)
+            throw new CustomException("The portfolio doesn't exist.", HttpStatus.NOT_FOUND);
+        List<Portfolio> portfolios = user.getPortfolios();
+        if (portfolios.contains(portfolio)) {
+            portfolios.remove(portfolio);
+            user.setPortfolios(portfolios);
+            userRepository.save(user);
+            portfolioRepository.deleteById(portfolio_id);
+            return;
+        }
+        throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND); // or HttpStatus.UNAUTHORIZED
     }
 
     public PortfolioDetailsDTO getPortfolioDetails(Long portfolio_id){
+        User user = userService.whoami();
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
         if(portfolio==null)
-            return new PortfolioDetailsDTO();
-        PortfolioDetailsDTO portfolioDetailsDTO = new PortfolioDetailsDTO();
-        List<Investment> investments = portfolio.getInvestments();
+            return new PortfolioDetailsDTO(); // throw new CustomException("The portfolio doesn't exist.", HttpStatus.NOT_FOUND);
+        List<Portfolio> portfolios = user.getPortfolios();
+        if (portfolios.contains(portfolio)) {
+            PortfolioDetailsDTO portfolioDetailsDTO = new PortfolioDetailsDTO();
+            List<Investment> investments = portfolio.getInvestments();
 
-        portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPortfolio(investments));
-        portfolioDetailsDTO.setInvestments(investmentInPortfolioDTO(investments));
-        portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(investments));
-        portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(investments));
-        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvestedCashInPortfolio(investments));
-        return portfolioDetailsDTO;
+            portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPortfolio(investments));
+            portfolioDetailsDTO.setInvestments(investmentInPortfolioDTO(investments));
+            portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(investments));
+            portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(investments));
+            portfolioDetailsDTO.setTotalInvestedCash(getTotalInvestedCashInPortfolio(investments));
+            return portfolioDetailsDTO;
+        }
+        throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND); // or HttpStatus.UNAUTHORIZED
     }
 
     public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
-        List<Portfolio> portfolios = portfolioRepository.findAll();
+        User user = userService.whoami();
+        List<Portfolio> portfolios = user.getPortfolios();
         List<Investment> investments = new ArrayList<>();
         for (Portfolio p : portfolios) {
             investments.addAll(p.getInvestments());
@@ -214,6 +241,8 @@ public class PortfolioService {
 
 
     public List<PortfolioNameDTO> getAllPortfoliosNames() {
-        return portfolioRepository.findAll().stream().map(p->new PortfolioNameDTO(p.getId(),p.getName())).collect(Collectors.toList());
+        User user = userService.whoami();
+        List<Portfolio> portfolios = user.getPortfolios();
+        return portfolios.stream().map(p->new PortfolioNameDTO(p.getId(),p.getName())).collect(Collectors.toList());
     }
 }
