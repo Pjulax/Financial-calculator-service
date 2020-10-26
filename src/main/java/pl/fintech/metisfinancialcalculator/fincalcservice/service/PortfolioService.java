@@ -9,14 +9,8 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDT
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.XDateType;
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.YValueType;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.GraphPoint;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.GraphPointRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.*;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,12 +25,17 @@ public class PortfolioService {
     PortfolioRepository portfolioRepository;
     ResultRepository resultRepository;
     GraphPointRepository graphPointRepository;
+    UserRepository userRepository;
 
     @Autowired
-    public PortfolioService(PortfolioRepository portfolioRepository, InvestmentRepository investmentRepository, ResultRepository resultRepository){
+    UserService userService;
+
+    @Autowired
+    public PortfolioService(PortfolioRepository portfolioRepository, InvestmentRepository investmentRepository, ResultRepository resultRepository, UserRepository userRepository){
         this.portfolioRepository = portfolioRepository;
         this.investmentRepository = investmentRepository;
         this.resultRepository = resultRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Investment> getPortfolioInvestments(){//TODO
@@ -92,7 +91,15 @@ public class PortfolioService {
     }
 
     public Portfolio createPortfolio(String name){
-        return portfolioRepository.save(new Portfolio(name));
+        User user = userService.whoami();
+        if(portfolioRepository.findPortfolioByName(name).orElse(null)!=null)
+            return new Portfolio();
+        List<Portfolio> portfolios = user.getPortfolios();
+        Portfolio portfolio = portfolioRepository.save(new Portfolio(name));
+        portfolios.add(portfolio);
+        user.setPortfolios(portfolios);
+        userRepository.save(user);
+        return  portfolio;
     }
     public Portfolio modifyPortfolio(Long portfolio_id, String newName){
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
