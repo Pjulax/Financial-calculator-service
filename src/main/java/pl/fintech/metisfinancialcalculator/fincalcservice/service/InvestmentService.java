@@ -1,12 +1,15 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRepository;
 
 import java.util.List;
@@ -16,15 +19,18 @@ public class InvestmentService {
 
     InvestmentRepository investmentRepository;
 
+    PortfolioRepository portfolioRepository;
+
     ResultRepository resultRepository;
 
     @Autowired
     Calculator calculator;
 
     @Autowired
-    public InvestmentService(InvestmentRepository investmentRepository, ResultRepository resultRepository){
+    public InvestmentService(InvestmentRepository investmentRepository, ResultRepository resultRepository, PortfolioRepository portfolioRepository){
         this.investmentRepository = investmentRepository;
         this.resultRepository = resultRepository;
+        this.portfolioRepository = portfolioRepository;
     }
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
@@ -75,9 +81,13 @@ public class InvestmentService {
         return investment;
     }
     public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
+
         Investment investment = investmentRepository.findById(investment_id).orElse(null);
-        if(investment==null)
-            return new Investment();
+        if(investment==null) return new Investment();
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
+        if(portfolio == null) return new Investment();
+        List<Investment> investments = portfolio.getInvestments();
+
         investment.setCategory(investmentDetailsDTO.getCategory());
         investment.setRisk(investmentDetailsDTO.getRisk());
         investment.setName(investmentDetailsDTO.getName());
@@ -96,10 +106,24 @@ public class InvestmentService {
         investmentParametersDTO.setReturnOfInvestment(investmentDetailsDTO.getReturnOfInvestmentPercentage());
         investmentParametersDTO.setSystematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
         investment.setResult(calculator.calculateInvestment(investmentParametersDTO));
-        //save modified
-        return investmentRepository.save(investment);
+        for(int i = 0; i<investments.size();i++){
+            if(investments.get(i).getId()== investment.getId()){
+                investments.set(i, investment);break;
+            }
+        }
+        portfolio.setInvestments(investments);
+        portfolioRepository.save(portfolio);
+        return investment;
     }
     public void removeInvestment(Long investment_id){
+        Investment inv = investmentRepository.findById(investment_id).orElse(null);
+        if(inv==null) return;
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).orElse(null);
+        if(portfolio == null) return;
+        List<Investment> investments = portfolio.getInvestments();
+        investments.remove(inv);
+        portfolio.setInvestments(investments);
+        portfolioRepository.save(portfolio);
         investmentRepository.deleteById(investment_id);
     }
 }
