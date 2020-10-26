@@ -9,11 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.UserDataDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.Role;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.UserRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.security.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -42,6 +46,11 @@ public class UserService {
     public String signup(User user) {
         if (!userRepository.existsByUsername(user.getUsername())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            if(null == user.getRoles()) {
+                List<Role> roles = new LinkedList<Role>();
+                roles.add(Role.ROLE_CLIENT);
+                user.setRoles(roles);
+            }
             userRepository.save(user);
             return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
         } else {
