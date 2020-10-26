@@ -24,31 +24,37 @@ public class PortfolioController {
     PortfolioService portfolioService;
 
     @GetMapping(path = "/names")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public List<PortfolioNameDTO> getAllPortfoliosNames(){//TODO
         return portfolioService.getAllPortfoliosNames();
     }
 
     @GetMapping(path = "/all-investments-details")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
         return portfolioService.getPortfolioAllInvestmentsDetails();
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public PortfolioDetailsDTO getPortfolio(@RequestParam(value = "id") Long portfolio_id){
         return portfolioService.getPortfolioDetails(portfolio_id);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public Portfolio createPortfolio(@RequestParam(value = "name") String name){//TODO
         return portfolioService.createPortfolio(name);
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public Portfolio modifyPortfolio(@RequestParam(value="new-name") String name, @RequestParam(value = "id") Long portfolio_id){
         return portfolioService.modifyPortfolio(portfolio_id, name);
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public void removePortfolio(@RequestParam(value = "id") Long portfolio_id){//TODO
         portfolioService.removePortfolio(portfolio_id);
     }
