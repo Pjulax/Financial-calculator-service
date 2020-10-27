@@ -8,9 +8,11 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParamete
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.UserRepository;
 
 import java.util.List;
 
@@ -23,17 +25,24 @@ public class InvestmentService {
 
     ResultRepository resultRepository;
 
+    UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
+
     @Autowired
     Calculator calculator;
 
     @Autowired
-    public InvestmentService(InvestmentRepository investmentRepository, ResultRepository resultRepository, PortfolioRepository portfolioRepository){
+    public InvestmentService(InvestmentRepository investmentRepository, ResultRepository resultRepository, PortfolioRepository portfolioRepository, UserRepository userRepository){
         this.investmentRepository = investmentRepository;
         this.resultRepository = resultRepository;
         this.portfolioRepository = portfolioRepository;
+        this.userRepository = userRepository;
     }
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
+        if(!doesInvestmentBelongToUser(investment_id)) return new InvestmentDetailsDTO();
         Investment investment = investmentRepository.findById(investment_id).orElse(null);
         if(investment==null){
             return new InvestmentDetailsDTO();
@@ -81,7 +90,7 @@ public class InvestmentService {
         return investment;
     }
     public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
-
+        if(!doesInvestmentBelongToUser(investment_id)) return new Investment();
         Investment investment = investmentRepository.findById(investment_id).orElse(null);
         if(investment==null) return new Investment();
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
@@ -116,6 +125,7 @@ public class InvestmentService {
         return investment;
     }
     public void removeInvestment(Long investment_id){
+        if(!doesInvestmentBelongToUser(investment_id)) return;
         Investment inv = investmentRepository.findById(investment_id).orElse(null);
         if(inv==null) return;
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).orElse(null);
@@ -125,6 +135,15 @@ public class InvestmentService {
         portfolio.setInvestments(investments);
         portfolioRepository.save(portfolio);
         investmentRepository.deleteById(investment_id);
+    }
+    private boolean doesInvestmentBelongToUser(Long investment_id){
+        Investment investment = investmentRepository.findById(investment_id).orElse(null);
+        if(investment==null) return false;
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
+        if(portfolio==null) return false;
+        User user = userRepository.findUserByPortfoliosContaining(portfolio).orElse(null);
+        if(user==null) return false;
+        return userService.whoami().getUsername().equals(user.getUsername());
     }
 }
 
