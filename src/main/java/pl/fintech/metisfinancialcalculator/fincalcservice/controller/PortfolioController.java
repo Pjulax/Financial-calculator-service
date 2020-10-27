@@ -23,6 +23,20 @@ public class PortfolioController {
     @Autowired
     PortfolioService portfolioService;
 
+
+    @GetMapping(path = "/hello")
+    public String hello(){
+        return "hello";
+    }
+
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @GetMapping(path = "/hello2")
+    public String hello2(){
+        return "hello";
+    }
+
+
+
     @GetMapping(path = "/names")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public List<PortfolioNameDTO> getAllPortfoliosNames(){
