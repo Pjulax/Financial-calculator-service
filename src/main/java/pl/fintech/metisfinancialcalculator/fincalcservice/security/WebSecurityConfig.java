@@ -129,15 +129,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-resources").permitAll()
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
                 .antMatchers("/swagger-resources/configuration/security").permitAll()
-                .antMatchers("/users/signin").permitAll()//
-                .antMatchers("/users/signup").permitAll()//
-//                .antMatchers("/h2-console/**/**").permitAll()
-                .antMatchers("/portfolios").permitAll()
-                .antMatchers("/investments").permitAll()
-                .antMatchers("/categories").permitAll()
-                .antMatchers("/categories/**").permitAll()
-                .antMatchers("/portfolios/**").permitAll()
-                .antMatchers("/investments/**").permitAll()
+                .antMatchers("/users/signin").permitAll()
+                .antMatchers("/users/signup").permitAll()
+                .antMatchers("/categories").permitAll() //
+                .antMatchers("/portfolios").permitAll() //
+                .antMatchers("/investments").permitAll() //
+                .antMatchers("/portfolios/**").permitAll() //
+                .antMatchers("/investments/**").permitAll() //
                 .requestMatchers(checkPort(managementPort)).permitAll()
                 // Disallow everything else..
                 .anyRequest().authenticated();
