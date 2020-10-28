@@ -22,14 +22,6 @@ public class Calculator {
     * Method is calculating value with "Make deposits at beginning of the period"
     */
     public Result calculateInvestment(InvestmentParametersDTO parameters){
-        if(parameters.getDurationInYears() <= .0d)
-            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
-        if(parameters.getFrequencyInYears() <= .0d)
-            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
-        if(parameters.getInitialDepositValue() < .0d)
-            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
-        if(parameters.getSystematicDepositValue() < .0d)
-            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
         // resultFV calculation
         BigDecimal resultFVWithCashFlow = new BigDecimal(parameters.getInitialDepositValue()).multiply(
                                 BigDecimal.valueOf(

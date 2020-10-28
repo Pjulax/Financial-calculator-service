@@ -46,6 +46,14 @@ public class InvestmentService {
         return investmentDetailsDTO;
     }
     public InvestmentDetailsDTO calculateInvestment(InvestmentParametersDTO parameters){
+        if(parameters.getDurationInYears() <= .0d)
+            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
+        if(parameters.getFrequencyInYears() <= .0d)
+            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
+        if(parameters.getInitialDepositValue() < .0d)
+            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
+        if(parameters.getSystematicDepositValue() < .0d)
+            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
         InvestmentDetailsDTO investment = new InvestmentDetailsDTO();
         // not used, write down just for clarity
         investment.setCategory(null);
@@ -67,9 +75,17 @@ public class InvestmentService {
         return investment;
     }
     public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
+        if(investmentDetailsDTO.getDurationInYears() <= .0d)
+            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
+        if(investmentDetailsDTO.getFrequencyInYears() <= .0d)
+            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
+        if(investmentDetailsDTO.getInitialDepositValue() < .0d)
+            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
+        if(investmentDetailsDTO.getSystematicDepositValue() < .0d)
+            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
         checkIfInvestmentBelongToUser(investment_id);
-        Investment investment = investmentRepository.findById(investment_id).get();
-        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).get();
+        Investment investment = investmentRepository.findById(investment_id).orElseThrow();
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElseThrow();
 
         List<Investment> investments = portfolio.getInvestments();
 
