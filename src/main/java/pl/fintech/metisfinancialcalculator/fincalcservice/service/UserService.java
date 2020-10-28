@@ -36,6 +36,8 @@ public class UserService {
         }
     }
     public String signup(User user) {
+        if (null==user.getUsername() || null==user.getPassword() || user.getUsername().isEmpty() || user.getPassword().isEmpty())
+            throw new CustomException("Bad request", HttpStatus.BAD_REQUEST);
         if (!userRepository.existsByUsername(user.getUsername())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             if(null == user.getRoles()) {
