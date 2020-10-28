@@ -1,9 +1,11 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.XDateType;
+import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.GraphPoint;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 
