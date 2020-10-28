@@ -1,6 +1,6 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
@@ -12,35 +12,18 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.UserRepository;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class InvestmentService {
-
-    InvestmentRepository investmentRepository;
-
-    PortfolioRepository portfolioRepository;
-
-    ResultRepository resultRepository;
-
-    UserRepository userRepository;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    Calculator calculator;
-
-    @Autowired
-    public InvestmentService(InvestmentRepository investmentRepository, ResultRepository resultRepository, PortfolioRepository portfolioRepository, UserRepository userRepository){
-        this.investmentRepository = investmentRepository;
-        this.resultRepository = resultRepository;
-        this.portfolioRepository = portfolioRepository;
-        this.userRepository = userRepository;
-    }
+    private final InvestmentRepository investmentRepository;
+    private final PortfolioRepository portfolioRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final Calculator calculator;
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
         checkIfInvestmentBelongToUser(investment_id);
@@ -61,9 +44,6 @@ public class InvestmentService {
         investmentDetailsDTO.setYAxisDataType(result.getYAxisDataType());
         investmentDetailsDTO.setGraphPointsValue(result.getGraphPointValues());
         return investmentDetailsDTO;
-    }
-    public List<Investment> getAllInvestments(){
-        return investmentRepository.findAll();
     }
     public InvestmentDetailsDTO calculateInvestment(InvestmentParametersDTO parameters){
         InvestmentDetailsDTO investment = new InvestmentDetailsDTO();
@@ -100,7 +80,6 @@ public class InvestmentService {
         investment.setFrequencyInYears(investmentDetailsDTO.getFrequencyInYears());
         investment.setReturnOfInvestment(investmentDetailsDTO.getReturnOfInvestmentPercentage());
         investment.setSystematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
-
 
         investment.setDurationInYears(investmentDetailsDTO.getDurationInYears());
         //setting parameters for new result

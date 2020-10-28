@@ -1,7 +1,6 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
@@ -20,20 +19,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
+@RequiredArgsConstructor
 public class PortfolioService {
-    final InvestmentRepository investmentRepository;
-    final PortfolioRepository portfolioRepository;
-    final UserRepository userRepository;
-    final UserService userService;
-
-    public PortfolioService(PortfolioRepository portfolioRepository, InvestmentRepository investmentRepository, UserRepository userRepository, UserService userService){
-        this.portfolioRepository = portfolioRepository;
-        this.investmentRepository = investmentRepository;
-        this.userRepository = userRepository;
-        this.userService = userService;
-    }
+    private final InvestmentRepository investmentRepository;
+    private final PortfolioRepository portfolioRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Long portfolio_id){
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
