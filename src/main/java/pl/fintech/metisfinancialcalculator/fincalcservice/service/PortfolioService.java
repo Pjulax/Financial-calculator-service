@@ -2,6 +2,7 @@ package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentInPortfolioDTO;
@@ -9,14 +10,9 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDT
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.XDateType;
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.YValueType;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.GraphPoint;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.GraphPointRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.*;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,12 +27,17 @@ public class PortfolioService {
     PortfolioRepository portfolioRepository;
     ResultRepository resultRepository;
     GraphPointRepository graphPointRepository;
+    UserRepository userRepository;
 
     @Autowired
-    public PortfolioService(PortfolioRepository portfolioRepository, InvestmentRepository investmentRepository, ResultRepository resultRepository){
+    UserService userService;
+
+    @Autowired
+    public PortfolioService(PortfolioRepository portfolioRepository, InvestmentRepository investmentRepository, ResultRepository resultRepository, UserRepository userRepository){
         this.portfolioRepository = portfolioRepository;
         this.investmentRepository = investmentRepository;
         this.resultRepository = resultRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Investment> getPortfolioInvestments(){//TODO
@@ -46,7 +47,7 @@ public class PortfolioService {
         return List.of();
     }
 
-    public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Long portfolio_id){//TODO
+    public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Long portfolio_id){
 
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
         if(portfolio==null) {
@@ -88,36 +89,69 @@ public class PortfolioService {
     }
 
     public Portfolio createPortfolio(String name){
-        return portfolioRepository.save(new Portfolio(name));
-    }
-    public Portfolio modifyPortfolio(Long portfolio_id, String newName){
-        Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
-        if(portfolio==null)
+        User user = userService.whoami();
+        if(portfolioRepository.findPortfolioByName(name).orElse(null)!=null)
             return new Portfolio();
-        portfolio.setName(newName);
-        return portfolioRepository.save(portfolio);
+        List<Portfolio> portfolios = user.getPortfolios();
+        Portfolio portfolio = portfolioRepository.save(new Portfolio(name));
+        portfolios.add(portfolio);
+        user.setPortfolios(portfolios);
+        userRepository.save(user);
+        return  portfolio;
     }
+
+    public Portfolio modifyPortfolio(Long portfolio_id, String newName){
+        User user = userService.whoami();
+        Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
+        if(null==portfolio)
+            return new Portfolio(); // throw new CustomException("The portfolio doesn't exist.", HttpStatus.NOT_FOUND);
+        List<Portfolio> portfolios = user.getPortfolios();
+        if (portfolios.contains(portfolio)) {
+            portfolio.setName(newName);
+            return portfolioRepository.save(portfolio);
+        }
+        return new Portfolio(); // throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND); // or HttpStatus.UNAUTHORIZED
+    }
+
     public void removePortfolio(Long portfolio_id){
-        portfolioRepository.deleteById(portfolio_id);
+        User user = userService.whoami();
+        Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
+        if(null==portfolio)
+            throw new CustomException("The portfolio doesn't exist.", HttpStatus.NOT_FOUND);
+        List<Portfolio> portfolios = user.getPortfolios();
+        if (portfolios.contains(portfolio)) {
+            portfolios.remove(portfolio);
+            user.setPortfolios(portfolios);
+            userRepository.save(user);
+            portfolioRepository.deleteById(portfolio_id);
+            return;
+        }
+        throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND); // or HttpStatus.UNAUTHORIZED
     }
 
     public PortfolioDetailsDTO getPortfolioDetails(Long portfolio_id){
+        User user = userService.whoami();
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
         if(portfolio==null)
-            return new PortfolioDetailsDTO();
-        PortfolioDetailsDTO portfolioDetailsDTO = new PortfolioDetailsDTO();
-        List<Investment> investments = portfolio.getInvestments();
+            return new PortfolioDetailsDTO(); // throw new CustomException("The portfolio doesn't exist.", HttpStatus.NOT_FOUND);
+        List<Portfolio> portfolios = user.getPortfolios();
+        if (portfolios.contains(portfolio)) {
+            PortfolioDetailsDTO portfolioDetailsDTO = new PortfolioDetailsDTO();
+            List<Investment> investments = portfolio.getInvestments();
 
-        portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPortfolio(investments));
-        portfolioDetailsDTO.setInvestments(investmentInPortfolioDTO(investments));
-        portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(investments));
-        portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(investments));
-        portfolioDetailsDTO.setTotalInvestedCash(getTotalInvestedCashInPortfolio(investments));
-        return portfolioDetailsDTO;
+            portfolioDetailsDTO.setGraphPointsValue(getGraphPointsValuesOFPortfolio(investments));
+            portfolioDetailsDTO.setInvestments(investmentInPortfolioDTO(investments));
+            portfolioDetailsDTO.setRateOfReturnPercentage(getRateOfReturnOfPortfolio(investments));
+            portfolioDetailsDTO.setRateOfReturnValue(getRateOfReturnValueOfPortfolio(investments));
+            portfolioDetailsDTO.setTotalInvestedCash(getTotalInvestedCashInPortfolio(investments));
+            return portfolioDetailsDTO;
+        }
+        throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND); // or HttpStatus.UNAUTHORIZED
     }
 
     public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
-        List<Portfolio> portfolios = portfolioRepository.findAll();
+        User user = userService.whoami();
+        List<Portfolio> portfolios = user.getPortfolios();
         List<Investment> investments = new ArrayList<>();
         for (Portfolio p : portfolios) {
             investments.addAll(p.getInvestments());
@@ -207,6 +241,8 @@ public class PortfolioService {
 
 
     public List<PortfolioNameDTO> getAllPortfoliosNames() {
-        return portfolioRepository.findAll().stream().map(p->new PortfolioNameDTO(p.getId(),p.getName())).collect(Collectors.toList());
+        User user = userService.whoami();
+        List<Portfolio> portfolios = user.getPortfolios();
+        return portfolios.stream().map(p->new PortfolioNameDTO(p.getId(),p.getName())).collect(Collectors.toList());
     }
 }
