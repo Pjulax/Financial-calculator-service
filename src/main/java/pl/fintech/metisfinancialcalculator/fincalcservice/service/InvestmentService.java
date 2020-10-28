@@ -1,10 +1,11 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
+import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
@@ -42,7 +43,7 @@ public class InvestmentService {
     }
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
-        if(!doesInvestmentBelongToUser(investment_id)) return new InvestmentDetailsDTO();
+        if(doesInvestmentBelongToUser(investment_id)) return new InvestmentDetailsDTO();
         Investment investment = investmentRepository.findById(investment_id).orElse(null);
         if(investment==null){
             return new InvestmentDetailsDTO();
@@ -90,7 +91,7 @@ public class InvestmentService {
         return investment;
     }
     public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
-        if(!doesInvestmentBelongToUser(investment_id)) return new Investment();
+        if(doesInvestmentBelongToUser(investment_id)) return new Investment();
         Investment investment = investmentRepository.findById(investment_id).orElse(null);
         if(investment==null) return new Investment();
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
@@ -125,7 +126,7 @@ public class InvestmentService {
         return investment;
     }
     public void removeInvestment(Long investment_id){
-        if(!doesInvestmentBelongToUser(investment_id)) return;
+        if(doesInvestmentBelongToUser(investment_id)) return;
         Investment inv = investmentRepository.findById(investment_id).orElse(null);
         if(inv==null) return;
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).orElse(null);
@@ -136,15 +137,16 @@ public class InvestmentService {
         portfolioRepository.save(portfolio);
         investmentRepository.deleteById(investment_id);
     }
-    private boolean doesInvestmentBelongToUser(Long investment_id){
+    private void checkIfInvestmentBelongToUser(Long investment_id) {
         Investment investment = investmentRepository.findById(investment_id).orElse(null);
-        if(investment==null) return false;
+        if (investment == null) throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
-        if(portfolio==null) return false;
+        if (portfolio == null) throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
         User user = userRepository.findUserByPortfoliosContaining(portfolio).orElse(null);
-        if(user==null) return false;
-        return userService.whoami().getUsername().equals(user.getUsername());
+        if (user == null) throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
+        boolean userMatch = !userService.whoami().getUsername().equals(user.getUsername());
+        if (userMatch)
+            throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
     }
 }
-
 
