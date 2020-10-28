@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.UserDataDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.UserResponseDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
+import pl.fintech.metisfinancialcalculator.fincalcservice.security.MyUserDetails;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,6 +84,11 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
     public String refresh(HttpServletRequest req) {
         return userService.refresh(req.getRemoteUser());
+    }
+
+    @GetMapping("/details")
+    public String getUserDetails(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }

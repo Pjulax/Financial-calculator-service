@@ -1,43 +1,33 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
-import io.swagger.models.auth.In;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
+import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.ResultRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.UserRepository;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class InvestmentService {
-
-    InvestmentRepository investmentRepository;
-
-    PortfolioRepository portfolioRepository;
-
-    ResultRepository resultRepository;
-
-    @Autowired
-    Calculator calculator;
-
-    @Autowired
-    public InvestmentService(InvestmentRepository investmentRepository, ResultRepository resultRepository, PortfolioRepository portfolioRepository){
-        this.investmentRepository = investmentRepository;
-        this.resultRepository = resultRepository;
-        this.portfolioRepository = portfolioRepository;
-    }
+    private final InvestmentRepository investmentRepository;
+    private final PortfolioRepository portfolioRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final Calculator calculator;
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
-        Investment investment = investmentRepository.findById(investment_id).orElse(null);
-        if(investment==null){
-            return new InvestmentDetailsDTO();
-        }
+        checkIfInvestmentBelongToUser(investment_id);
+        Investment investment = investmentRepository.findById(investment_id).orElseThrow();
         InvestmentDetailsDTO investmentDetailsDTO = new InvestmentDetailsDTO();
         Result result = investment.getResult();
         investmentDetailsDTO.setName(investment.getName());
@@ -55,11 +45,15 @@ public class InvestmentService {
         investmentDetailsDTO.setGraphPointsValue(result.getGraphPointValues());
         return investmentDetailsDTO;
     }
-    public List<Investment> getAllInvestments(){
-        return investmentRepository.findAll();
-    }
-
     public InvestmentDetailsDTO calculateInvestment(InvestmentParametersDTO parameters){
+        if(parameters.getDurationInYears() <= .0d)
+            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
+        if(parameters.getFrequencyInYears() <= .0d)
+            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
+        if(parameters.getInitialDepositValue() < .0d)
+            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
+        if(parameters.getSystematicDepositValue() < .0d)
+            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
         InvestmentDetailsDTO investment = new InvestmentDetailsDTO();
         // not used, write down just for clarity
         investment.setCategory(null);
@@ -81,11 +75,18 @@ public class InvestmentService {
         return investment;
     }
     public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
+        if(investmentDetailsDTO.getDurationInYears() <= .0d)
+            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
+        if(investmentDetailsDTO.getFrequencyInYears() <= .0d)
+            throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
+        if(investmentDetailsDTO.getInitialDepositValue() < .0d)
+            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
+        if(investmentDetailsDTO.getSystematicDepositValue() < .0d)
+            throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
+        checkIfInvestmentBelongToUser(investment_id);
+        Investment investment = investmentRepository.findById(investment_id).orElseThrow();
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElseThrow();
 
-        Investment investment = investmentRepository.findById(investment_id).orElse(null);
-        if(investment==null) return new Investment();
-        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
-        if(portfolio == null) return new Investment();
         List<Investment> investments = portfolio.getInvestments();
 
         investment.setCategory(investmentDetailsDTO.getCategory());
@@ -95,7 +96,6 @@ public class InvestmentService {
         investment.setFrequencyInYears(investmentDetailsDTO.getFrequencyInYears());
         investment.setReturnOfInvestment(investmentDetailsDTO.getReturnOfInvestmentPercentage());
         investment.setSystematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
-
 
         investment.setDurationInYears(investmentDetailsDTO.getDurationInYears());
         //setting parameters for new result
@@ -107,7 +107,7 @@ public class InvestmentService {
         investmentParametersDTO.setSystematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
         investment.setResult(calculator.calculateInvestment(investmentParametersDTO));
         for(int i = 0; i<investments.size();i++){
-            if(investments.get(i).getId()== investment.getId()){
+            if(investments.get(i).getId().equals(investment.getId())){
                 investments.set(i, investment);break;
             }
         }
@@ -116,16 +116,23 @@ public class InvestmentService {
         return investment;
     }
     public void removeInvestment(Long investment_id){
-        Investment inv = investmentRepository.findById(investment_id).orElse(null);
-        if(inv==null) return;
-        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).orElse(null);
-        if(portfolio == null) return;
+        checkIfInvestmentBelongToUser(investment_id);
+        Investment inv = investmentRepository.findById(investment_id).orElseThrow();
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).orElseThrow();
         List<Investment> investments = portfolio.getInvestments();
         investments.remove(inv);
         portfolio.setInvestments(investments);
         portfolioRepository.save(portfolio);
         investmentRepository.deleteById(investment_id);
     }
+    private void checkIfInvestmentBelongToUser(Long investment_id) {
+        Investment investment = investmentRepository.findById(investment_id).orElse(null);
+        if (investment == null) throw new CustomException("The resource can't be found or access is unauthorized", HttpStatus.NOT_FOUND);
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
+        if (portfolio == null) throw new CustomException("The resource can't be found or access is unauthorized", HttpStatus.NOT_FOUND);
+        User user = userRepository.findUserByPortfoliosContaining(portfolio).orElse(null);
+        if (user == null) throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
+        if (!userService.whoami().getUsername().equals(user.getUsername()))
+            throw new CustomException("Unauthorized access", HttpStatus.NOT_FOUND);
+    }
 }
-
-
