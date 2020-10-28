@@ -132,13 +132,12 @@ public class InvestmentService {
     }
     private void checkIfInvestmentBelongToUser(Long investment_id) {
         Investment investment = investmentRepository.findById(investment_id).orElse(null);
-        if (investment == null) throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
+        if (investment == null) throw new CustomException("The resource can't be found or access is unauthorized", HttpStatus.NOT_FOUND);
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
-        if (portfolio == null) throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
+        if (portfolio == null) throw new CustomException("The resource can't be found or access is unauthorized", HttpStatus.NOT_FOUND);
         User user = userRepository.findUserByPortfoliosContaining(portfolio).orElse(null);
-        if (user == null) throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
-        boolean userMatch = !userService.whoami().getUsername().equals(user.getUsername());
-        if (userMatch)
-            throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
+        if (user == null) throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
+        if (!userService.whoami().getUsername().equals(user.getUsername()))
+            throw new CustomException("Unauthorized access", HttpStatus.NOT_FOUND);
     }
 }
