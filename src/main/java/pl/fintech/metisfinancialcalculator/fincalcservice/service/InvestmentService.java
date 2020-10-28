@@ -43,11 +43,13 @@ public class InvestmentService {
     }
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
-        if(doesInvestmentBelongToUser(investment_id)) return new InvestmentDetailsDTO();
-        Investment investment = investmentRepository.findById(investment_id).orElse(null);
-        if(investment==null){
-            return new InvestmentDetailsDTO();
+        try{
+            checkIfInvestmentBelongToUser(investment_id);
         }
+        catch (CustomException ex) {
+            throw ex;
+        }
+        Investment investment = investmentRepository.findById(investment_id).get();
         InvestmentDetailsDTO investmentDetailsDTO = new InvestmentDetailsDTO();
         Result result = investment.getResult();
         investmentDetailsDTO.setName(investment.getName());
@@ -68,7 +70,6 @@ public class InvestmentService {
     public List<Investment> getAllInvestments(){
         return investmentRepository.findAll();
     }
-
     public InvestmentDetailsDTO calculateInvestment(InvestmentParametersDTO parameters){
         InvestmentDetailsDTO investment = new InvestmentDetailsDTO();
         // not used, write down just for clarity
@@ -91,11 +92,15 @@ public class InvestmentService {
         return investment;
     }
     public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
-        if(doesInvestmentBelongToUser(investment_id)) return new Investment();
-        Investment investment = investmentRepository.findById(investment_id).orElse(null);
-        if(investment==null) return new Investment();
-        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
-        if(portfolio == null) return new Investment();
+        try{
+            checkIfInvestmentBelongToUser(investment_id);
+        }
+        catch (CustomException ex) {
+            throw ex;
+        }
+        Investment investment = investmentRepository.findById(investment_id).get();
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).get();
+
         List<Investment> investments = portfolio.getInvestments();
 
         investment.setCategory(investmentDetailsDTO.getCategory());
@@ -117,7 +122,7 @@ public class InvestmentService {
         investmentParametersDTO.setSystematicDepositValue(investmentDetailsDTO.getSystematicDepositValue());
         investment.setResult(calculator.calculateInvestment(investmentParametersDTO));
         for(int i = 0; i<investments.size();i++){
-            if(investments.get(i).getId()== investment.getId()){
+            if(investments.get(i).getId().equals(investment.getId())){
                 investments.set(i, investment);break;
             }
         }
@@ -126,11 +131,14 @@ public class InvestmentService {
         return investment;
     }
     public void removeInvestment(Long investment_id){
-        if(doesInvestmentBelongToUser(investment_id)) return;
-        Investment inv = investmentRepository.findById(investment_id).orElse(null);
-        if(inv==null) return;
-        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).orElse(null);
-        if(portfolio == null) return;
+        try{
+            checkIfInvestmentBelongToUser(investment_id);
+        }
+        catch (CustomException ex) {
+            throw ex;
+        }
+        Investment inv = investmentRepository.findById(investment_id).get();
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).get();
         List<Investment> investments = portfolio.getInvestments();
         investments.remove(inv);
         portfolio.setInvestments(investments);
@@ -149,4 +157,3 @@ public class InvestmentService {
             throw new CustomException("Unauthorized access.", HttpStatus.NOT_FOUND);
     }
 }
-

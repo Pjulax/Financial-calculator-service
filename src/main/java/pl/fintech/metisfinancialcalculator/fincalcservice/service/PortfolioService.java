@@ -40,13 +40,6 @@ public class PortfolioService {
         this.userRepository = userRepository;
     }
 
-    public List<Investment> getPortfolioInvestments(){//TODO
-        return List.of();
-    }
-    public List<Portfolio> getAllPortfolios(){//TODO
-        return List.of();
-    }
-
     public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Long portfolio_id){
 
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
