@@ -164,6 +164,7 @@ public class PortfolioService {
         return graphPoints;
     }
     private List<InvestmentInPortfolioDTO> investmentInPortfolioDTO(List<Investment> investments){
+        if(investments.size()==0) return List.of();
         List<InvestmentInPortfolioDTO> investmentInPortfolioDTO = new ArrayList<>();
 
         for (Investment in: investments) {
@@ -181,6 +182,7 @@ public class PortfolioService {
         return investmentInPortfolioDTO;
     }
     private BigDecimal getRateOfReturnOfPortfolio(List<Investment> investments){
+        if(investments.size()==0) return BigDecimal.ZERO;
         double sumOfInvestedMoney = 0d;
         double sumOfResult = 0d;
         for (Investment in: investments) {
@@ -194,12 +196,14 @@ public class PortfolioService {
         return BigDecimal.valueOf(result);
     }
     private BigDecimal getRateOfReturnValueOfPortfolio(List<Investment> investments){
+        if(investments.size()==0) return BigDecimal.ZERO;
         double sumOfResult = 0d;
         for (Investment in: investments)
             sumOfResult += (in.getResult().getRateOfReturnValue().doubleValue());
         return BigDecimal.valueOf(sumOfResult);
     }
     private BigDecimal getTotalInvestedCashInPortfolio(List<Investment> investments){
+        if(investments.size()==0) return BigDecimal.ZERO;
         double sumOfInvestedMoney = 0d;
         for (Investment in: investments) {
             double investedMoney = in.getSystematicDepositValue()*(in.getDurationInYears()/in.getFrequencyInYears())+in.getInitialDepositValue();
@@ -210,6 +214,8 @@ public class PortfolioService {
     public List<PortfolioNameDTO> getAllPortfoliosNames() {
         User user = userService.whoami();
         List<Portfolio> portfolios = user.getPortfolios();
+        if(portfolios.isEmpty())
+            return List.of();
         return portfolios.stream().map(p->new PortfolioNameDTO(p.getId(),p.getName())).collect(Collectors.toList());
     }
 }
