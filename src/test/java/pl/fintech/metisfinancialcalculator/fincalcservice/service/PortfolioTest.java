@@ -44,8 +44,14 @@ public class PortfolioTest {
 
     @Test
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
-    public void shouldNotAllowToCreatePorfolioWithTheSameName(){
+    public void shouldNotAllowToCreatePortfolioWithTheSameName(){
         when(portfolioRepository.existsByName(any())).thenReturn(true);
         assertThrows(CustomException.class, () -> portfolioService.createPortfolio(any()));
+    }
+
+    @Test
+    @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
+    public void shouldNotAllowUserToCreateBlankPortfolio(){
+        assertThrows(CustomException.class, () -> portfolioService.createPortfolio(""));
     }
 }

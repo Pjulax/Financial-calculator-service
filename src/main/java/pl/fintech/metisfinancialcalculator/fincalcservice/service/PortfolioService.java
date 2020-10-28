@@ -73,6 +73,8 @@ public class PortfolioService {
         return investment;
     }
     public Portfolio createPortfolio(String name){
+        if(name.isBlank())
+            throw new CustomException("Portfolio name is empty", HttpStatus.CONFLICT);
         if(portfolioRepository.existsByName(name))
             throw new CustomException("Portfolio already exists", HttpStatus.CONFLICT);
         User user = userService.whoami();
@@ -84,6 +86,7 @@ public class PortfolioService {
         user.setPortfolios(portfolios);
         userRepository.save(user);
         return portfolio;
+
     }
     public Portfolio modifyPortfolio(Long portfolio_id, String newName){
         User user = userService.whoami();
