@@ -43,12 +43,7 @@ public class InvestmentService {
     }
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
-        try{
-            checkIfInvestmentBelongToUser(investment_id);
-        }
-        catch (CustomException ex) {
-            throw ex;
-        }
+        checkIfInvestmentBelongToUser(investment_id);
         Investment investment = investmentRepository.findById(investment_id).get();
         InvestmentDetailsDTO investmentDetailsDTO = new InvestmentDetailsDTO();
         Result result = investment.getResult();
@@ -92,12 +87,7 @@ public class InvestmentService {
         return investment;
     }
     public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
-        try{
-            checkIfInvestmentBelongToUser(investment_id);
-        }
-        catch (CustomException ex) {
-            throw ex;
-        }
+        checkIfInvestmentBelongToUser(investment_id);
         Investment investment = investmentRepository.findById(investment_id).get();
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).get();
 
@@ -131,12 +121,7 @@ public class InvestmentService {
         return investment;
     }
     public void removeInvestment(Long investment_id){
-        try{
-            checkIfInvestmentBelongToUser(investment_id);
-        }
-        catch (CustomException ex) {
-            throw ex;
-        }
+        checkIfInvestmentBelongToUser(investment_id);
         Investment inv = investmentRepository.findById(investment_id).get();
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).get();
         List<Investment> investments = portfolio.getInvestments();
