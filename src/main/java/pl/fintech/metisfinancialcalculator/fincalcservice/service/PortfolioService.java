@@ -112,7 +112,7 @@ public class PortfolioService {
         User user = userService.whoami();
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
         if(portfolio==null)
-            return new PortfolioDetailsDTO(); // throw new CustomException("The portfolio doesn't exist.", HttpStatus.NOT_FOUND);
+            throw new CustomException("The portfolio doesn't exist.", HttpStatus.NOT_FOUND);
         List<Portfolio> portfolios = user.getPortfolios();
         if (portfolios.contains(portfolio)) {
             PortfolioDetailsDTO portfolioDetailsDTO = new PortfolioDetailsDTO();
