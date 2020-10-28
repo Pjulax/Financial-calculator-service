@@ -134,6 +134,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/h2-console/**/**").permitAll()
                 .antMatchers("/portfolios").permitAll()
                 .antMatchers("/investments").permitAll()
+                .antMatchers("/categories").permitAll()
+                .antMatchers("/categories/**").permitAll()
                 .antMatchers("/portfolios/**").permitAll()
                 .antMatchers("/investments/**").permitAll()
                 .requestMatchers(checkPort(managementPort)).permitAll()

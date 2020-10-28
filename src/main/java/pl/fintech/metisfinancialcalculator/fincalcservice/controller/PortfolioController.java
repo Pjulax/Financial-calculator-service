@@ -32,6 +32,7 @@ public class PortfolioController {
         return portfolioService.getPortfolioAllInvestmentsDetails();
     }
 
+
     @GetMapping
     public PortfolioDetailsDTO getPortfolio(@RequestParam(value = "id") Long portfolio_id){
         return portfolioService.getPortfolioDetails(portfolio_id);
