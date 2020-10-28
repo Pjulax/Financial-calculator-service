@@ -1,11 +1,9 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.service;
 
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.enums.XDateType;
-import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.GraphPoint;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
 
@@ -57,7 +55,7 @@ public class Calculator {
         result.setReturnOfInvestment(investment.getReturnOfInvestment());
         result.setRateOfReturnValue(resultFVWithCashFlow.subtract(investedMoney));
         result.setRateOfReturnPercentage(result.getRateOfReturnValue().divide(investedMoney,RoundingMode.FLOOR).doubleValue());
-        // possibly this member could be better to be BigDecimal, not double // TODO change from value to percentage
+        // TODO change from value to percentage
         result.setGraphPointValues(graphPoints);
         result.setXAxisDataType(getDateType(investment.getDurationInYears()));
         result.setYAxisDataType(POUNDS);
