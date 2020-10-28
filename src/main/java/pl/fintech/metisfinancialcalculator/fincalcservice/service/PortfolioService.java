@@ -46,6 +46,10 @@ public class PortfolioService {
         return List.of();
     }
 
+    public String[] getCategories(){
+        return getPortfolioAllInvestmentsDetails().getInvestments().stream().map(InvestmentInPortfolioDTO::getCategory).distinct().toArray(String[]::new);
+    }
+
     public Investment addInvestment(InvestmentDetailsDTO investmentDTO, Long portfolio_id){//TODO
 
         Portfolio portfolio = portfolioRepository.findById(portfolio_id).orElse(null);
@@ -163,7 +167,7 @@ public class PortfolioService {
         for (Investment in: investments
              ) {
             InvestmentInPortfolioDTO inPortfolioDTO = new InvestmentInPortfolioDTO();
-            inPortfolioDTO.setCategory(in.getName());
+            inPortfolioDTO.setCategory(in.getCategory());
             inPortfolioDTO.setGraphPointsValue(in.getResult().getGraphPointValues());
             inPortfolioDTO.setId(in.getId());
             inPortfolioDTO.setName(in.getName());
