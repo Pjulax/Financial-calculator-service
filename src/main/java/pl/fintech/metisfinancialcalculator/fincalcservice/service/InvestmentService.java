@@ -27,7 +27,7 @@ public class InvestmentService {
 
     public InvestmentDetailsDTO getInvestment(Long investment_id){
         checkIfInvestmentBelongToUser(investment_id);
-        Investment investment = investmentRepository.findById(investment_id).get();
+        Investment investment = investmentRepository.findById(investment_id).orElseThrow();
         InvestmentDetailsDTO investmentDetailsDTO = new InvestmentDetailsDTO();
         Result result = investment.getResult();
         investmentDetailsDTO.setName(investment.getName());
@@ -117,8 +117,8 @@ public class InvestmentService {
     }
     public void removeInvestment(Long investment_id){
         checkIfInvestmentBelongToUser(investment_id);
-        Investment inv = investmentRepository.findById(investment_id).get();
-        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).get();
+        Investment inv = investmentRepository.findById(investment_id).orElseThrow();
+        Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).orElseThrow();
         List<Investment> investments = portfolio.getInvestments();
         investments.remove(inv);
         portfolio.setInvestments(investments);
