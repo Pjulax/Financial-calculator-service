@@ -25,7 +25,6 @@ public class Result {
     private BigDecimal rateOfReturnValue;
     private Double rateOfReturnPercentage;
     private Double returnOfInvestment;
-
     private XDateType XAxisDataType;
     private YValueType YAxisDataType;
 

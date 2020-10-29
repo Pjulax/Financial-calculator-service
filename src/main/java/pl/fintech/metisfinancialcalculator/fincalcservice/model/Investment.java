@@ -15,19 +15,12 @@ public class Investment {
     @GeneratedValue()
     private Long id;
     private String name;
-
-//    Category to String, further I can change it back to Category
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "category_id")
-
     private String category;
-
     private Double risk;
     private Double initialDepositValue;
     private Double systematicDepositValue;
     private Double frequencyInYears;
     private Double returnOfInvestment;
-
     private Double durationInYears;
 
     @OneToOne(cascade = CascadeType.ALL)

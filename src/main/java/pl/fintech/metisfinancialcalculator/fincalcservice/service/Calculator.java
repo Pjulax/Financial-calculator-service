@@ -16,9 +16,6 @@ import static pl.fintech.metisfinancialcalculator.fincalcservice.enums.YValueTyp
 @Service
 @NoArgsConstructor
 public class Calculator {
-    /*
-    * Method is calculating value with "Make deposits at beginning of the period"
-    */
     public Result calculateInvestment(InvestmentParametersDTO parameters){
         // resultFV calculation
         BigDecimal resultFVWithCashFlow = new BigDecimal(parameters.getInitialDepositValue()).multiply(
