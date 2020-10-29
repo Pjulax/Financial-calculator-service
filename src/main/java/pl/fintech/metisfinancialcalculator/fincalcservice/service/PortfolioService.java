@@ -73,7 +73,7 @@ public class PortfolioService {
         return investment;
     }
     public Portfolio createPortfolio(String name){
-        if(name.isBlank())
+        if(name == null || name.isBlank())
             throw new CustomException("Portfolio name is empty", HttpStatus.CONFLICT);
         if(portfolioRepository.existsByName(name))
             throw new CustomException("Portfolio already exists", HttpStatus.CONFLICT);
@@ -225,7 +225,7 @@ public class PortfolioService {
     public List<PortfolioNameDTO> getAllPortfoliosNames() {
         User user = userService.whoami();
         List<Portfolio> portfolios = user.getPortfolios();
-        if(portfolios.isEmpty())
+        if(portfolios==null||portfolios.isEmpty())
             return List.of();
         return portfolios.stream().map(p->new PortfolioNameDTO(p.getId(),p.getName())).collect(Collectors.toList());
     }

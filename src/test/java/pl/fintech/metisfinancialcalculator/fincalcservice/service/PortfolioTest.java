@@ -9,6 +9,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class PortfolioTest {
     @Mock
     private PortfolioRepository portfolioRepository;
 
+    @Mock
+    private UserService userService;
+
     @InjectMocks
     private PortfolioService portfolioService;
 
@@ -33,20 +37,21 @@ public class PortfolioTest {
         Portfolio portfolio1 = new Portfolio("First");
         Portfolio portfolio2 = new Portfolio("Second");
 
-        when(portfolioRepository.findAll()).thenReturn(List.of(portfolio1, portfolio2));
-
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("name");
+        user.setPortfolios(List.of(portfolio1, portfolio2));
+        when(userService.whoami()).thenReturn(user);
         List<PortfolioNameDTO> portfolioNameDTOS = portfolioService.getAllPortfoliosNames();
-
         assertEquals( portfolioNameDTOS.get(0).getName(), "First");
         assertEquals( portfolioNameDTOS.get(1).getName(), "Second");
-
     }
 
     @Test
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldNotAllowToCreatePortfolioWithTheSameName(){
-        when(portfolioRepository.existsByName(any())).thenReturn(true);
-        assertThrows(CustomException.class, () -> portfolioService.createPortfolio(any()));
+        when(portfolioRepository.existsByName("First")).thenReturn(true);
+        assertThrows(CustomException.class, () -> portfolioService.createPortfolio("First"));
     }
 
     @Test
