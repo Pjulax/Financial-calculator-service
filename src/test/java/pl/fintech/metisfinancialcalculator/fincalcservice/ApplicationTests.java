@@ -34,8 +34,6 @@ class ApplicationTests {
     private MockMvc mockMvc;
 
 
-
-
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     @Test
     public void shouldReturnHello() throws Exception {

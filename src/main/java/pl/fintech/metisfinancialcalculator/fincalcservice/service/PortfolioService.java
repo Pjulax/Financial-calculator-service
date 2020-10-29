@@ -136,6 +136,8 @@ public class PortfolioService {
         User user = userService.whoami();
         List<Portfolio> portfolios = user.getPortfolios();
         List<Investment> investments = new ArrayList<>();
+        if(portfolios==null || portfolios.isEmpty())
+            throw new CustomException("The portfolio doesn't exist", HttpStatus.NOT_FOUND);
         for (Portfolio p : portfolios) {
             investments.addAll(p.getInvestments());
         }
