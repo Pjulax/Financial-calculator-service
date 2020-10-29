@@ -12,7 +12,12 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.enums.YValueType;
 import pl.fintech.metisfinancialcalculator.fincalcservice.exception.CustomException;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.*;
-
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.GraphPoint;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentRepository;
+import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -67,6 +72,10 @@ public class PortfolioService {
         return investment;
     }
     public Portfolio createPortfolio(String name){
+        if(name == null || name.isBlank())
+            throw new CustomException("Portfolio name is empty", HttpStatus.CONFLICT);
+        if(portfolioRepository.existsByName(name))
+            throw new CustomException("Portfolio already exists", HttpStatus.CONFLICT);
         User user = userService.whoami();
         if(portfolioRepository.findPortfolioByName(name).orElse(null)!=null)
             throw new CustomException("The portfolio doesn't exist", HttpStatus.NOT_FOUND);
@@ -76,6 +85,7 @@ public class PortfolioService {
         user.setPortfolios(portfolios);
         userRepository.save(user);
         return portfolio;
+
     }
     public Portfolio modifyPortfolio(Long portfolioId, String newName){
         User user = userService.whoami();
@@ -220,7 +230,7 @@ public class PortfolioService {
     public List<PortfolioNameDTO> getAllPortfoliosNames() {
         User user = userService.whoami();
         List<Portfolio> portfolios = user.getPortfolios();
-        if(portfolios.isEmpty())
+        if(portfolios==null||portfolios.isEmpty())
             return List.of();
         return portfolios.stream().map(p->new PortfolioNameDTO(p.getId(),p.getName())).collect(Collectors.toList());
     }

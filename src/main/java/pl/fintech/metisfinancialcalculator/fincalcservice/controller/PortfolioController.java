@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.PortfolioService;
 
 import java.util.List;
@@ -16,8 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 public class PortfolioController {
 
-    private final PortfolioRepository portfolioRepository;
     private final PortfolioService portfolioService;
+
+    @GetMapping(path = "/hello")
+    public String hello(){
+        return "hello";
+    }
+
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @GetMapping(path = "/hello2")
+    public String hello2(){
+        return "hello";
+    }
 
     @GetMapping(path = "/names")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
