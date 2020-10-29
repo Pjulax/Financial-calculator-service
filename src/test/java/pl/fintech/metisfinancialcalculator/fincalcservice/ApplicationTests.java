@@ -34,11 +34,7 @@ class ApplicationTests {
     private MockMvc mockMvc;
 
 
-    @Test
-    public void shouldReturnDefaultMessage() throws Exception {
-        this.mockMvc.perform(get("/portfolios/hello")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("hello")));
-    }
+
 
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     @Test
