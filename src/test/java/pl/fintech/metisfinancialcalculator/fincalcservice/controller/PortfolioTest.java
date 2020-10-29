@@ -11,14 +11,18 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
+import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.PortfolioService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -69,5 +73,28 @@ public class PortfolioTest {
                 new JSONObject().put("id", 2).put("name", "Some name for second").toString());
         this.mockMvc.perform(get(PORTFOLIO +"/names")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().json(names.toString()));
+    }
+
+    @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
+    @Test
+    public void shouldReturnNoNames() throws Exception {
+        when(portfolioService.getAllPortfoliosNames()).thenReturn(List.of());
+        String names = List.of().toString();
+        this.mockMvc.perform(get(PORTFOLIO +"/names")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().json(names));
+    }
+
+
+    @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
+    @Test
+    public void shouldReturnModifiedPortfolio() throws Exception {
+        Portfolio portfolio = new Portfolio("modifiedname");
+        when(portfolioService.modifyPortfolio(1L, "modifiedname")).thenReturn(portfolio);
+        String portfolioJSON = new JSONObject().put("id", portfolio.getId())
+                .put("name", portfolio.getName())
+                .put("investments",portfolio.getInvestments())
+                .put("result", portfolio.getResult()).toString();
+        this.mockMvc.perform(put(PORTFOLIO+"?new-name=modifiedname&id=1")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().json(portfolioJSON));
     }
 }
