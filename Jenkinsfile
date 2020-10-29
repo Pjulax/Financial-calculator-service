@@ -102,5 +102,22 @@ pipeline {
                 }
             }
         }
+        stage('Deploy Prod') {
+            when { branch 'master' }
+            agent {
+                docker {
+                    image 'fintech/kubernetes-agent'
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG')]) {
+                        sh "kubectl apply -f ./kubernetes-prod.yaml"
+                        sh "kubectl rollout restart deployment fin-calc-service"
+                    }
+                }
+            }
+        }
     }
 }
