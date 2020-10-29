@@ -52,10 +52,8 @@ public class PortfolioService {
 
         result.setReturnOfInvestment(investmentDTO.getReturnOfInvestmentPercentage());
         result.setRateOfReturnPercentage(investmentDTO.getRateOfReturnPercentage());
-
         result.setRateOfReturnValue(investmentDTO.getRateOfReturnValue());
         result.setGraphPointValues(investmentDTO.getGraphPointsValue());
-
         result.setXAxisDataType(XDateType.YEAR);
         result.setYAxisDataType(YValueType.POUNDS);
 

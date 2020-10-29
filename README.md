@@ -16,3 +16,7 @@ Application is available here: (username: example, password: example)
 * SIT - https://fin-calc-service.metis-team.sit.fintechchallenge.pl/
 * UAT - https://fin-calc-service.metis-team.uat.fintechchallenge.pl/
 * PROD - https://fin-calc-service.metis-team.fintechchallenge.pl/
+
+* Basic Auth 
+* username  metismember 
+* password  et4hlTMis
