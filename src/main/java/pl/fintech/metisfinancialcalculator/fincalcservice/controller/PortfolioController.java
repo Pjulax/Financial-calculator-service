@@ -1,6 +1,6 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDTO;
@@ -13,13 +13,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/portfolios")
+@AllArgsConstructor
 public class PortfolioController {
 
-    @Autowired
-    PortfolioRepository portfolioRepository;
-
-    @Autowired
-    PortfolioService portfolioService;
+    private final PortfolioRepository portfolioRepository;
+    private final PortfolioService portfolioService;
 
     @GetMapping(path = "/names")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
@@ -32,7 +30,6 @@ public class PortfolioController {
     public PortfolioDetailsDTO getPortfolioAllInvestmentsDetails(){
         return portfolioService.getPortfolioAllInvestmentsDetails();
     }
-
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
