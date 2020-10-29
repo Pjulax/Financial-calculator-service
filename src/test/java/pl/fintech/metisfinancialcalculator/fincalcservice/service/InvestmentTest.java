@@ -18,18 +18,19 @@ import pl.fintech.metisfinancialcalculator.fincalcservice.repository.InvestmentR
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.repository.UserRepository;
 
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.doubleThat;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class InvestmentTest {
+
+    private final Random random = new Random(Calendar.getInstance().getTimeInMillis());
 
     @Mock
     InvestmentRepository investmentRepository;
@@ -50,7 +51,6 @@ public class InvestmentTest {
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldReturnExistingInvestment(){
         Investment investment = new Investment();
-        Random random = new Random();
         double systematicDepositValue = (double) random.nextInt(100) + random.nextDouble();
         double roi = (double) random.nextInt(10) + random.nextDouble()/10;
         double initialDeposit = ((double) random.nextInt(1000) + random.nextDouble())/10;
@@ -88,14 +88,12 @@ public class InvestmentTest {
     @Test
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldThrowOnNonExistingInvestment(){
-        Random random = new Random();
         assertThrows(CustomException.class, () -> investmentService.getInvestment(random.nextLong()));
     }
 
     @Test
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldThrowOnNonBelongingInvestmentToPortfolio(){
-        Random random = new Random();
         when(investmentRepository.findById(any())).thenReturn(Optional.of(new Investment()));
         when(portfolioRepository.findByInvestmentsContaining(any())).thenReturn(Optional.empty());
         assertThrows(CustomException.class, () -> investmentService.getInvestment(random.nextLong()));
@@ -104,7 +102,6 @@ public class InvestmentTest {
     @Test
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldThrowOnNonBelongingInvestmentToUser(){
-        Random random = new Random();
         when(investmentRepository.findById(any())).thenReturn(Optional.of(new Investment()));
         when(portfolioRepository.findByInvestmentsContaining(any())).thenReturn(Optional.of(new Portfolio()));
         when(userRepository.findUserByPortfoliosContaining(any())).thenReturn(Optional.empty());
@@ -114,14 +111,12 @@ public class InvestmentTest {
     @Test
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldThrowOnNonExistingInvestmentOnRemoveOperation(){
-        Random random = new Random();
         assertThrows(CustomException.class, () -> investmentService.removeInvestment(random.nextLong()));
     }
 
     @Test
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldThrowOnNonBelongingInvestmentToPortfolioOnRemoveOperation(){
-        Random random = new Random();
         when(investmentRepository.findById(any())).thenReturn(Optional.of(new Investment()));
         when(portfolioRepository.findByInvestmentsContaining(any())).thenReturn(Optional.empty());
         assertThrows(CustomException.class, () -> investmentService.removeInvestment(random.nextLong()));
@@ -130,7 +125,6 @@ public class InvestmentTest {
     @Test
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldThrowOnNonBelongingInvestmentToUserOnRemoveOperation(){
-        Random random = new Random();
         when(investmentRepository.findById(any())).thenReturn(Optional.of(new Investment()));
         when(portfolioRepository.findByInvestmentsContaining(any())).thenReturn(Optional.of(new Portfolio()));
         when(userRepository.findUserByPortfoliosContaining(any())).thenReturn(Optional.empty());
@@ -143,7 +137,6 @@ public class InvestmentTest {
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldNotAllowToCalculateNegativeDuration(){
         InvestmentParametersDTO parametersDTO = new InvestmentParametersDTO();
-        Random random = new Random();
         parametersDTO.setSystematicDepositValue((double) random.nextInt(100) + random.nextDouble());
         parametersDTO.setReturnOfInvestment(((double) random.nextInt(10) + random.nextDouble())/10);
         parametersDTO.setInitialDepositValue(((double) random.nextInt(1000) + random.nextDouble())/10);
@@ -158,7 +151,6 @@ public class InvestmentTest {
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldNotAllowToCalculateNegativeFrequency(){
         InvestmentParametersDTO parametersDTO = new InvestmentParametersDTO();
-        Random random = new Random();
         parametersDTO.setSystematicDepositValue((double) random.nextInt(100) + random.nextDouble());
         parametersDTO.setReturnOfInvestment(((double) random.nextInt(10) + random.nextDouble())/10);
         parametersDTO.setInitialDepositValue(((double) random.nextInt(1000) + random.nextDouble())/10);
@@ -171,7 +163,6 @@ public class InvestmentTest {
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldNotAllowToCalculateNegativeDeposit(){
         InvestmentParametersDTO parametersDTO = new InvestmentParametersDTO();
-        Random random = new Random();
         parametersDTO.setSystematicDepositValue((double) random.nextInt(100) + random.nextDouble() -100);
         parametersDTO.setReturnOfInvestment(((double) random.nextInt(10) + random.nextDouble())/10);
         parametersDTO.setInitialDepositValue(((double) random.nextInt(1000) + random.nextDouble())/10-1000);
@@ -184,7 +175,6 @@ public class InvestmentTest {
     @WithMockUser(username = "user", password = "name", roles = {"ADMIN", "CLIENT"})
     public void shouldNotAllowToCalculateNegativeSystematicDeposit(){
         InvestmentParametersDTO parametersDTO = new InvestmentParametersDTO();
-        Random random = new Random();
         parametersDTO.setSystematicDepositValue((double) random.nextInt(100) + random.nextDouble() -100);
         parametersDTO.setReturnOfInvestment(((double) random.nextInt(10) + random.nextDouble())/10);
         parametersDTO.setInitialDepositValue(((double) random.nextInt(1000) + random.nextDouble())/10);
