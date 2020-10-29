@@ -65,7 +65,6 @@ public class Calculator {
         else {
             result.setRateOfReturnPercentage(0.0);
         }
-        // TODO change from value to percentage
         result.setGraphPointValues(graphPoints);
         result.setXAxisDataType(getDateType(investment.getDurationInYears()));
         result.setYAxisDataType(POUNDS);
