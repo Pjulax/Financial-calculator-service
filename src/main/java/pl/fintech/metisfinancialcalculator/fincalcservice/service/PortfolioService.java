@@ -85,7 +85,6 @@ public class PortfolioService {
         user.setPortfolios(portfolios);
         userRepository.save(user);
         return portfolio;
-
     }
     public Portfolio modifyPortfolio(Long portfolioId, String newName){
         User user = userService.whoami();

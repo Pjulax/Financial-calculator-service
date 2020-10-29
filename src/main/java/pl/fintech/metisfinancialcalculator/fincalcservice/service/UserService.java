@@ -52,6 +52,8 @@ public class UserService {
         }
     }
     public void delete(String username) {
+        if(null==userRepository.findByUsername(username))
+            throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
         userRepository.deleteByUsername(username);
     }
     public User search(String username) {
