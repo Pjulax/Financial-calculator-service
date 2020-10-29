@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.UserDataDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.UserResponseDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
-import pl.fintech.metisfinancialcalculator.fincalcservice.security.MyUserDetails;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
