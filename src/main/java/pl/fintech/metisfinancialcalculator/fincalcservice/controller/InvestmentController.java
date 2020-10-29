@@ -7,17 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.InvestmentParametersDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Investment;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
-import pl.fintech.metisfinancialcalculator.fincalcservice.model.Result;
-import pl.fintech.metisfinancialcalculator.fincalcservice.service.Calculator;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.InvestmentService;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.PortfolioService;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/investments")
@@ -30,30 +21,30 @@ public class InvestmentController {
     PortfolioService portfolioService;
 
     @GetMapping
-    public InvestmentDetailsDTO getInvestmentDetails(@RequestParam(value = "id") Long investment_id){//TODO
-        return investmentService.getInvestment(investment_id);
+    public InvestmentDetailsDTO getInvestmentDetails(@RequestParam(value = "id") Long investmentId){
+        return investmentService.getInvestment(investmentId);
     }
 
 
     @PostMapping(value = "/calculate", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public InvestmentDetailsDTO calculateInvestment(@RequestBody InvestmentParametersDTO parameters){//TODO
+    public InvestmentDetailsDTO calculateInvestment(@RequestBody InvestmentParametersDTO parameters){
         return investmentService.calculateInvestment(parameters);
     }
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Investment addInvestment(@RequestBody InvestmentDetailsDTO investmentDTO, @RequestParam(value = "id") Long portfolio_id){//TODO
-        return portfolioService.addInvestment(investmentDTO,portfolio_id);
+    public Investment addInvestment(@RequestBody InvestmentDetailsDTO investmentDTO, @RequestParam(value = "id") Long portfolioId){
+        return portfolioService.addInvestment(investmentDTO,portfolioId);
     }
 
     @PutMapping
-    public Investment modifyInvestment(@RequestBody InvestmentDetailsDTO investmentDTO, @RequestParam(value = "id") Long investment_id){//TODO
-        return investmentService.modifyInvestment(investment_id,investmentDTO);
+    public Investment modifyInvestment(@RequestBody InvestmentDetailsDTO investmentDTO, @RequestParam(value = "id") Long investmentId){
+        return investmentService.modifyInvestment(investmentId,investmentDTO);
     }
 
     @DeleteMapping
-    public void removeInvestment(@RequestParam(value = "id") Long investment_id){//TODO
-        investmentService.removeInvestment(investment_id);
+    public void removeInvestment(@RequestParam(value = "id") Long investmentId){
+        investmentService.removeInvestment(investmentId);
     }
 
 }
