@@ -44,7 +44,7 @@ public class SwaggerConfig {
     private ApiInfo metadata() {
         return new ApiInfoBuilder()
                 .title("Metis Investment Calculator Api")
-                .description("Project documentation for backend endpoints. Provides basic knowledge about responses, statuses and data.")
+                .description("With this application you can calculate return of investments. You are able to group them into portfolios, describe investment category and set risk.")
                 .version("0.4.6 DEMO")
                 //.license("MIT License").licenseUrl("http://opensource.org/licenses/MIT")//
                 //.contact(new Contact("DevMountain - Fintech Challenge", null, null))//
