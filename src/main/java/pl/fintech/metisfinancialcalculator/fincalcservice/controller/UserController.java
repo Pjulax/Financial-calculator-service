@@ -1,15 +1,14 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.controller;
 
 import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.UserDataDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.UserResponseDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.User;
-import pl.fintech.metisfinancialcalculator.fincalcservice.security.MyUserDetails;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,13 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @Api(tags = "users")
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
 
     @PostMapping("/signup")
     @ApiOperation(value = "${UserController.signup}")

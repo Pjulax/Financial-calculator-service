@@ -25,9 +25,9 @@ public class InvestmentService {
     private final UserService userService;
     private final Calculator calculator;
 
-    public InvestmentDetailsDTO getInvestment(Long investment_id){
-        checkIfInvestmentBelongToUser(investment_id);
-        Investment investment = investmentRepository.findById(investment_id).orElseThrow();
+    public InvestmentDetailsDTO getInvestment(Long investmentId){
+        checkIfInvestmentBelongToUser(investmentId);
+        Investment investment = investmentRepository.findById(investmentId).orElseThrow();
         InvestmentDetailsDTO investmentDetailsDTO = new InvestmentDetailsDTO();
         Result result = investment.getResult();
         investmentDetailsDTO.setName(investment.getName());
@@ -74,7 +74,7 @@ public class InvestmentService {
         investment.setYAxisDataType(result.getYAxisDataType());
         return investment;
     }
-    public Investment modifyInvestment(Long investment_id, InvestmentDetailsDTO investmentDetailsDTO){
+    public Investment modifyInvestment(Long investmentId, InvestmentDetailsDTO investmentDetailsDTO){
         if(investmentDetailsDTO.getDurationInYears() <= .0d)
             throw new CustomException("Arguments can't be equal to 0 or below", HttpStatus.NOT_ACCEPTABLE);
         if(investmentDetailsDTO.getFrequencyInYears() <= .0d)
@@ -83,8 +83,8 @@ public class InvestmentService {
             throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
         if(investmentDetailsDTO.getSystematicDepositValue() < .0d)
             throw new CustomException("Arguments can't be below 0", HttpStatus.NOT_ACCEPTABLE);
-        checkIfInvestmentBelongToUser(investment_id);
-        Investment investment = investmentRepository.findById(investment_id).orElseThrow();
+        checkIfInvestmentBelongToUser(investmentId);
+        Investment investment = investmentRepository.findById(investmentId).orElseThrow();
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElseThrow();
 
         List<Investment> investments = portfolio.getInvestments();
@@ -115,18 +115,18 @@ public class InvestmentService {
         portfolioRepository.save(portfolio);
         return investment;
     }
-    public void removeInvestment(Long investment_id){
-        checkIfInvestmentBelongToUser(investment_id);
-        Investment inv = investmentRepository.findById(investment_id).orElseThrow();
+    public void removeInvestment(Long investmentId){
+        checkIfInvestmentBelongToUser(investmentId);
+        Investment inv = investmentRepository.findById(investmentId).orElseThrow();
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(inv).orElseThrow();
         List<Investment> investments = portfolio.getInvestments();
         investments.remove(inv);
         portfolio.setInvestments(investments);
         portfolioRepository.save(portfolio);
-        investmentRepository.deleteById(investment_id);
+        investmentRepository.deleteById(investmentId);
     }
-    private void checkIfInvestmentBelongToUser(Long investment_id) {
-        Investment investment = investmentRepository.findById(investment_id).orElse(null);
+    private void checkIfInvestmentBelongToUser(Long investmentId) {
+        Investment investment = investmentRepository.findById(investmentId).orElse(null);
         if (investment == null) throw new CustomException("The resource can't be found or access is unauthorized", HttpStatus.NOT_FOUND);
         Portfolio portfolio = portfolioRepository.findByInvestmentsContaining(investment).orElse(null);
         if (portfolio == null) throw new CustomException("The resource can't be found or access is unauthorized", HttpStatus.NOT_FOUND);

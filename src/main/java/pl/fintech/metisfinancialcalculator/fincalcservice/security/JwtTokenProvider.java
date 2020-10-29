@@ -41,7 +41,7 @@ public class JwtTokenProvider {
     private Key key;
 
     @Value("${security.jwt.token.expire-length:3600000}")
-    private final long validityInMilliseconds = 3600000; // 1h
+    private long validityInMilliseconds;
 
     @Autowired
     private MyUserDetails myUserDetails;

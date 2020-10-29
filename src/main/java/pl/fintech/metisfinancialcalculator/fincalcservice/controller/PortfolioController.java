@@ -1,28 +1,21 @@
 package pl.fintech.metisfinancialcalculator.fincalcservice.controller;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioDetailsDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.dto.PortfolioNameDTO;
 import pl.fintech.metisfinancialcalculator.fincalcservice.model.Portfolio;
-import pl.fintech.metisfinancialcalculator.fincalcservice.repository.PortfolioRepository;
 import pl.fintech.metisfinancialcalculator.fincalcservice.service.PortfolioService;
 
 import java.util.List;
 
-//c@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/portfolios")
+@AllArgsConstructor
 public class PortfolioController {
 
-    @Autowired
-    PortfolioRepository portfolioRepository;
-
-    @Autowired
-    PortfolioService portfolioService;
-
+    private final PortfolioService portfolioService;
 
     @GetMapping(path = "/hello")
     public String hello(){
@@ -34,8 +27,6 @@ public class PortfolioController {
     public String hello2(){
         return "hello";
     }
-
-
 
     @GetMapping(path = "/names")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
@@ -49,11 +40,10 @@ public class PortfolioController {
         return portfolioService.getPortfolioAllInvestmentsDetails();
     }
 
-
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    public PortfolioDetailsDTO getPortfolio(@RequestParam(value = "id") Long portfolio_id){
-        return portfolioService.getPortfolioDetails(portfolio_id);
+    public PortfolioDetailsDTO getPortfolio(@RequestParam(value = "id") Long portfolioId){
+        return portfolioService.getPortfolioDetails(portfolioId);
     }
 
     @PostMapping
@@ -64,14 +54,14 @@ public class PortfolioController {
 
     @PutMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    public Portfolio modifyPortfolio(@RequestParam(value="new-name") String name, @RequestParam(value = "id") Long portfolio_id){
-        return portfolioService.modifyPortfolio(portfolio_id, name);
+    public Portfolio modifyPortfolio(@RequestParam(value="new-name") String name, @RequestParam(value = "id") Long portfolioId){
+        return portfolioService.modifyPortfolio(portfolioId, name);
     }
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    public void removePortfolio(@RequestParam(value = "id") Long portfolio_id){
-        portfolioService.removePortfolio(portfolio_id);
+    public void removePortfolio(@RequestParam(value = "id") Long portfolioId){
+        portfolioService.removePortfolio(portfolioId);
     }
 
 }

@@ -41,7 +41,7 @@ public class UserService {
         if (!userRepository.existsByUsername(user.getUsername())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             if(null == user.getRoles()) {
-                List<Role> roles = new LinkedList<Role>();
+                List<Role> roles = new LinkedList<>();
                 roles.add(Role.ROLE_CLIENT);
                 user.setRoles(roles);
             }
