@@ -57,9 +57,9 @@ public class InvestmentService {
         InvestmentDetailsDTO investment = new InvestmentDetailsDTO();
         // not used, write down just for clarity
         investment.setCategory(null);
-        investment.setRisk(null);
         investment.setName(null);
         // values from parameters
+        investment.setRisk(parameters.getRisk());
         investment.setInitialDepositValue(parameters.getInitialDepositValue());
         investment.setSystematicDepositValue(parameters.getSystematicDepositValue());
         investment.setDurationInYears(parameters.getDurationInYears());

@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InvestmentParametersDTO {
     private String startDate;
+    private Double risk;
     private Double initialDepositValue;
     private Double systematicDepositValue;
     private Double frequencyInYears;
