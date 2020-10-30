@@ -157,7 +157,7 @@ public class PortfolioService {
         investments.sort( (o1, o2) -> o2.getDurationInYears().compareTo(o1.getDurationInYears()));
         double maxDuration = investments.get(0).getDurationInYears();
 
-        investments.sort(Comparator.comparing(Investment::getFrequencyInYears));
+        investments.sort(Comparator.comparing(Investment::getFrequencyInYears).reversed());
         double minInterval = investments.get(0).getFrequencyInYears();
 
         for(double i = 0.0; i<maxDuration; i+=minInterval){
